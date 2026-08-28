@@ -120,7 +120,7 @@
 
             try {
                 // Pega a URL do seu Render (substitua pelo seu link oficial do Render se precisar, ou rota relativa)
-                const resposta = await fetch('/adicionar-produto', {
+                const resposta = await fetch('https://vendas-oline.onrender.com/adicionar-produto', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ linkAfiliado: link })
