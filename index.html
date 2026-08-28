@@ -43,31 +43,41 @@
         </div>
     </div>
 
-    <!-- Script de Inicialização do PWA e Configurações -->
-    <script>
-        // Registra o Service Worker para o app funcionar como nativo
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log("Service Worker registrado com sucesso!"))
-                .catch((err) => console.log("Erro ao registrar Service Worker:", err));
-        }
+    <!-- Script do Firebase e Inicialização -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
-        // Função simulada de clique em oferta (depois ligaremos no Firebase)
+        // Suas chaves oficiais do Firebase
+        const firebaseConfig = {
+          apiKey: "AIzaSyC75L1-BhKHuwAf21o2ORV6UMHK0JVvcmQ",
+          authDomain: "minhas-ofertas-b7e7c.firebaseapp.com",
+          projectId: "minhas-ofertas-b7e7c",
+          storageBucket: "minhas-ofertas-b7e7c.firebasestorage.app",
+          messagingSenderId: "99097601702",
+          appId: "1:99097601702:web:2823b813ad536b170b7667",
+          measurementId: "G-RQX64PZ4EY"
+        };
+
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        console.log("Firebase conectado com sucesso!");
+
+        // Lógica de cliques na oferta
         let cliques = localStorage.getItem('cliquesOferta') || 0;
         document.getElementById('contador-cliques').innerText = cliques;
 
-        function clicarOferta(linkAfiliado) {
+        window.clicarOferta = function(linkAfiliado) {
             cliques++;
             localStorage.setItem('cliquesOferta', cliques);
             document.getElementById('contador-cliques').innerText = cliques;
             
-            // Aqui abriria o seu link de afiliado real
             alert("Redirecionando para o seu link de afiliado da Shopee/Mercado Livre!");
             // window.location.href = linkAfiliado;
         }
 
-        // Função que vai pedir permissão para o Web Push
-        function ativarNotificacoes() {
+        window.ativarNotificacoes = function() {
             Notification.requestPermission().then((permission) => {
                 if (permission === 'granted') {
                     alert("Sucesso! Agora você receberá notificações de ofertas.");
@@ -75,6 +85,15 @@
                     alert("Permissão negada. Você não receberá os alertas automáticos.");
                 }
             });
+        }
+    </script>
+
+    <!-- Script de Configuração do PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log("Service Worker registrado com sucesso!"))
+                .catch((err) => console.log("Erro ao registrar Service Worker:", err));
         }
     </script>
 </body>
