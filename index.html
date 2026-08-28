@@ -38,15 +38,16 @@
         <div class="card">
             <h3>Produto em Destaque 🚀</h3>
             <p>Smartphone / Eletrônico com super desconto hoje!</p>
-            <button onclick="clicarOferta('https://shopee.com.br')">Ver Oferta na Loja</button>
-            <div class="stats">Cliques nesta oferta hoje: <span id="contador-cliques">0</span></div>
+            <button onclick="registrarCliqueNaNuvem()">Ver Oferta na Loja</button>
+            <div class="stats">Cliques totais na nuvem: <span id="contador-cliques">Carregando...</span></div>
         </div>
     </div>
 
-    <!-- Script do Firebase e Inicialização -->
+    <!-- Script do Firebase, Firestore e Inicialização -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Suas chaves oficiais do Firebase
         const firebaseConfig = {
@@ -59,22 +60,53 @@
           measurementId: "G-RQX64PZ4EY"
         };
 
-        // Inicializa o Firebase
+        // Inicializa o Firebase e o Banco de Dados (Firestore)
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        console.log("Firebase conectado com sucesso!");
+        const db = getFirestore(app);
 
-        // Lógica de cliques na oferta
-        let cliques = localStorage.getItem('cliquesOferta') || 0;
-        document.getElementById('contador-cliques').innerText = cliques;
+        console.log("Firebase e Firestore conectados com sucesso!");
 
-        window.clicarOferta = function(linkAfiliado) {
-            cliques++;
-            localStorage.setItem('cliquesOferta', cliques);
-            document.getElementById('contador-cliques').innerText = cliques;
-            
-            alert("Redirecionando para o seu link de afiliado da Shopee/Mercado Livre!");
-            // window.location.href = linkAfiliado;
+        // Função para buscar o contador atualizado lá no Firebase
+        async function carregarCliques() {
+            try {
+                const docRef = doc(db, "estatisticas", "cliquesOfertas");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    document.getElementById('contador-cliques').innerText = docSnap.data().total || 0;
+                } else {
+                    // Se o documento não existe ainda, cria com 0
+                    await setDoc(docRef, { total: 0 });
+                    document.getElementById('contador-cliques').innerText = 0;
+                }
+            } catch (erro) {
+                console.error("Erro ao carregar cliques:", erro);
+                document.getElementById('contador-cliques').innerText = "Erro ao conectar";
+            }
+        }
+
+        // Executa assim que a página abre
+        carregarCliques();
+
+        // Função que soma +1 clique direto no banco de dados do Google
+        window.registrarCliqueNaNuvem = async function() {
+            try {
+                const docRef = doc(db, "estatisticas", "cliquesOfertas");
+                // Atualiza somando 1 automaticamente no banco
+                await updateDoc(docRef, {
+                    total: increment(1)
+                });
+
+                // Atualiza o visor na hora
+                carregarCliques();
+
+                alert("Redirecionando para o seu link de afiliado da Shopee/Mercado Livre!");
+                // window.location.href = "https://shopee.com.br";
+            } catch (erro) {
+                console.error("Erro ao registrar clique:", erro);
+                alert("Erro ao registrar clique. Verifique sua conexão.");
+            }
         }
 
         window.ativarNotificacoes = function() {
