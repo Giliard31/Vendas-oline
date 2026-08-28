@@ -27,16 +27,16 @@
 
     <header>
         <h2>🔥 Super Ofertas & Achadinhos</h2>
-        <p>Cadastre e envie promoções em segundos</p>
+        <p>Cole o link e o robô publica para você</p>
     </header>
 
     <div class="container">
-        <!-- Painel de Cadastro Rápido por Link -->
+        <!-- Painel de Cadastro Automático -->
         <div class="card">
-            <h3>Cadastrar Novo Produto 🔗</h3>
-            <p>Cole o link do seu afiliado abaixo:</p>
-            <input type="text" id="input-link" placeholder="https://shopee.com.br/seu-link-aqui">
-            <button class="btn-secundario" onclick="cadastrarPorLink()">🚀 Publicar na Vitrine</button>
+            <h3>Cadastrar por Link 🔗</h3>
+            <p>Cole o link da Shopee ou Mercado Livre:</p>
+            <input type="text" id="input-link" placeholder="https://shopee.com.br/...">
+            <button class="btn-secundario" onclick="cadastrarAutomatico()">🚀 Puxar e Publicar na Vitrine</button>
         </div>
 
         <!-- Vitrine de Produtos -->
@@ -81,7 +81,7 @@
                     const prod = docSnap.data();
                     htmlProdutos += `
                         <div class="card produto-card">
-                            <img src="${prod.imagem || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'}" alt="Produto">
+                            <img src="${prod.imagem}" alt="Produto">
                             <div class="produto-titulo">${prod.titulo}</div>
                             <div class="produto-preco">R$ ${prod.preco}</div>
                             <p>${prod.descricao}</p>
@@ -110,7 +110,7 @@
         carregarProdutos();
         carregarCliques();
 
-        window.cadastrarPorLink = async function() {
+        window.cadastrarAutomatico = async function() {
             const link = document.getElementById('input-link').value;
             if (!link) {
                 alert("Por favor, cole um link válido!");
@@ -118,6 +118,8 @@
             }
 
             try {
+                alert("Robô lendo o link... Aguarde um instante.");
+                
                 // ⚠️ COLOQUE O LINK EXATO DO SEU RENDER AQUI EMBAIXO:
                 const resposta = await fetch('https://vendas-oline.onrender.com/adicionar-produto', {
                     method: 'POST',
@@ -127,18 +129,16 @@
 
                 const resultado = await resposta.json();
                 if (resultado.sucesso) {
-                    // Salva direto no banco usando a sessão autenticada do app
                     await addDoc(collection(db, "produtos"), resultado.produto);
-                    
                     alert("Oferta publicada com sucesso!");
                     document.getElementById('input-link').value = '';
                     carregarProdutos();
                 } else {
-                    alert("Erro ao cadastrar oferta.");
+                    alert("Erro ao ler o link.");
                 }
             } catch (erro) {
                 console.error("Erro na requisição:", erro);
-                alert("Erro ao conectar com o servidor.");
+                alert("Erro ao conectar com o robô.");
             }
         }
 
