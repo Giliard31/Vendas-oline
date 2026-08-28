@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Ofertas - Achadinhos</title>
-    <!-- Vincula o Manifesto para virar App (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2563eb">
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
         header { background: #2563eb; color: white; padding: 20px; text-align: center; }
         .container { padding: 20px; max-width: 600px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; text-align: center; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .produto-card { text-align: left; border-left: 4px solid #2563eb; }
+        .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+        .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
         button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 10px; }
         button:hover { background: #1d4ed8; }
         .btn-secundario { background: #10b981; }
         .btn-secundario:hover { background: #059669; }
-        .stats { font-size: 14px; color: #666; margin-top: 10px; }
+        .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -28,28 +30,28 @@
 
     <div class="container">
         <!-- Caixa de Alerta de Notificações -->
-        <div class="card">
+        <div class="card" style="text-align: center;">
             <h3>Não perca nenhuma promoção!</h3>
-            <p>Ative as notificações para receber alertas relâmpago direto no seu celular, mesmo com o app fechado.</p>
+            <p>Ative as notificações para receber alertas relâmpago direto no seu celular.</p>
             <button class="btn-secundario" onclick="ativarNotificacoes()">🔔 Ativar Alertas de Ofertas</button>
         </div>
 
-        <!-- Vitrine de Exemplo de Oferta -->
-        <div class="card">
-            <h3>Produto em Destaque 🚀</h3>
-            <p>Smartphone / Eletrônico com super desconto hoje!</p>
-            <button onclick="registrarCliqueNaNuvem()">Ver Oferta na Loja</button>
-            <div class="stats">Cliques totais na nuvem: <span id="contador-cliques">Carregando...</span></div>
+        <!-- Onde os produtos reais vão aparecer automaticamente -->
+        <div id="lista-produtos">
+            <p style="text-align: center; color: #666;">Carregando ofertas em tempo real...</p>
+        </div>
+
+        <!-- Contador Geral de Cliques -->
+        <div class="card stats">
+            Cliques totais no app: <span id="contador-cliques">0</span>
         </div>
     </div>
 
-    <!-- Script do Firebase, Firestore e Inicialização -->
+    <!-- Script do Firebase e Firestore -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Suas chaves oficiais do Firebase
         const firebaseConfig = {
           apiKey: "AIzaSyC75L1-BhKHuwAf21o2ORV6UMHK0JVvcmQ",
           authDomain: "minhas-ofertas-b7e7c.firebaseapp.com",
@@ -60,52 +62,66 @@
           measurementId: "G-RQX64PZ4EY"
         };
 
-        // Inicializa o Firebase e o Banco de Dados (Firestore)
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const db = getFirestore(app);
 
-        console.log("Firebase e Firestore conectados com sucesso!");
+        // Função para carregar os produtos cadastrados no Firebase
+        async function carregarProdutos() {
+            const container = document.getElementById('lista-produtos');
+            try {
+                const querySnapshot = await getDocs(collection(db, "produtos"));
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<div class="card" style="text-align: center;"><p>Nenhuma oferta cadastrada no momento. Volte em breve!</p></div>';
+                    return;
+                }
 
-        // Função para buscar o contador atualizado lá no Firebase
+                let htmlProdutos = '';
+                querySnapshot.forEach((docSnap) => {
+                    const prod = docSnap.data();
+                    htmlProdutos += `
+                        <div class="card produto-card">
+                            <div class="produto-titulo">${prod.titulo || 'Produto Incrível'}</div>
+                            <div class="produto-preco">R$ ${prod.preco || '0,00'}</div>
+                            <p>${prod.descricao || ''}</p>
+                            <button onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = htmlProdutos;
+            } catch (erro) {
+                console.error("Erro ao carregar produtos:", erro);
+                container.innerHTML = '<div class="card" style="text-align: center;"><p>Erro ao carregar as ofertas.</p></div>';
+            }
+        }
+
+        // Função para carregar e atualizar o contador geral de cliques
         async function carregarCliques() {
             try {
                 const docRef = doc(db, "estatisticas", "cliquesOfertas");
                 const docSnap = await getDoc(docRef);
-
                 if (docSnap.exists()) {
                     document.getElementById('contador-cliques').innerText = docSnap.data().total || 0;
-                } else {
-                    // Se o documento não existe ainda, cria com 0
-                    await setDoc(docRef, { total: 0 });
-                    document.getElementById('contador-cliques').innerText = 0;
                 }
             } catch (erro) {
                 console.error("Erro ao carregar cliques:", erro);
-                document.getElementById('contador-cliques').innerText = "Erro ao conectar";
             }
         }
 
-        // Executa assim que a página abre
+        carregarProdutos();
         carregarCliques();
 
-        // Função que soma +1 clique direto no banco de dados do Google
-        window.registrarCliqueNaNuvem = async function() {
+        // Ação ao clicar no produto do afiliado
+        window.clicarProduto = async function(idProduto, linkAfiliado) {
             try {
                 const docRef = doc(db, "estatisticas", "cliquesOfertas");
-                // Atualiza somando 1 automaticamente no banco
-                await updateDoc(docRef, {
-                    total: increment(1)
-                });
-
-                // Atualiza o visor na hora
+                await updateDoc(docRef, { total: increment(1) });
                 carregarCliques();
 
-                alert("Redirecionando para o seu link de afiliado da Shopee/Mercado Livre!");
-                // window.location.href = "https://shopee.com.br";
+                // Abre o seu link de afiliado da Shopee/Mercado Livre numa aba nova
+                window.open(linkAfiliado, '_blank');
             } catch (erro) {
                 console.error("Erro ao registrar clique:", erro);
-                alert("Erro ao registrar clique. Verifique sua conexão.");
+                window.open(linkAfiliado, '_blank');
             }
         }
 
@@ -114,18 +130,14 @@
                 if (permission === 'granted') {
                     alert("Sucesso! Agora você receberá notificações de ofertas.");
                 } else {
-                    alert("Permissão negada. Você não receberá os alertas automáticos.");
+                    alert("Permissão negada.");
                 }
             });
         }
     </script>
-
-    <!-- Script de Configuração do PWA -->
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log("Service Worker registrado com sucesso!"))
-                .catch((err) => console.log("Erro ao registrar Service Worker:", err));
+            navigator.serviceWorker.register('sw.js').catch((err) => console.log(err));
         }
     </script>
 </body>
