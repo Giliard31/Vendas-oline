@@ -34,7 +34,7 @@
         <!-- Painel de Cadastro Rápido por Link -->
         <div class="card">
             <h3>Cadastrar Novo Produto 🔗</h3>
-            <p>Cole o link do seu afiliado (Shopee/Mercado Livre) abaixo:</p>
+            <p>Cole o link do seu afiliado abaixo:</p>
             <input type="text" id="input-link" placeholder="https://shopee.com.br/seu-link-aqui">
             <button class="btn-secundario" onclick="cadastrarPorLink()">🚀 Publicar na Vitrine</button>
         </div>
@@ -110,7 +110,6 @@
         carregarProdutos();
         carregarCliques();
 
-        // Envia o link para o servidor do Render cadastrar
         window.cadastrarPorLink = async function() {
             const link = document.getElementById('input-link').value;
             if (!link) {
@@ -119,7 +118,7 @@
             }
 
             try {
-                // Pega a URL do seu Render (substitua pelo seu link oficial do Render se precisar, ou rota relativa)
+                // ⚠️ COLOQUE O LINK EXATO DO SEU RENDER AQUI EMBAIXO:
                 const resposta = await fetch('https://vendas-oline.onrender.com/adicionar-produto', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -130,7 +129,7 @@
                 if (resultado.sucesso) {
                     alert("Oferta publicada com sucesso!");
                     document.getElementById('input-link').value = '';
-                    carregarProdutos(); // Atualiza a tela
+                    carregarProdutos();
                 } else {
                     alert("Erro ao cadastrar oferta.");
                 }
