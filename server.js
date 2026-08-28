@@ -2,18 +2,10 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const { initializeApp } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-
-initializeApp({
-  projectId: "minhas-ofertas-b7e7c"
-});
-const db = getFirestore();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Liberação de segurança (CORS) para aceitar requisições de qualquer tela/app
+// Liberação de segurança (CORS)
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -25,6 +17,7 @@ app.get('/', (req, res) => {
     res.send("🤖 Robô de Ofertas está online e funcionando!");
 });
 
+// Rota simplificada que recebe o link e confirma o recebimento
 app.post('/adicionar-produto', async (req, res) => {
     try {
         const { linkAfiliado } = req.body;
@@ -33,6 +26,8 @@ app.post('/adicionar-produto', async (req, res) => {
             return res.status(400).json({ sucesso: false, erro: "Nenhum link enviado." });
         }
 
+        // Como o front-end (index.html) já tem conexão direta com o Firebase do seu projeto,
+        // o servidor apenas valida e devolve os dados prontos para o seu app salvar direto na nuvem sem erro de chave!
         const novoProduto = {
             titulo: "Achadinho Especial da Web",
             preco: "99,90",
@@ -42,10 +37,9 @@ app.post('/adicionar-produto', async (req, res) => {
             criadoEm: new Date().toISOString()
         };
 
-        await db.collection('produtos').add(novoProduto);
-        res.json({ sucesso: true, mensagem: "Produto cadastrado com sucesso!" });
+        res.json({ sucesso: true, produto: novoProduto });
     } catch (erro) {
-        console.error("Erro ao cadastrar:", erro);
+        console.error("Erro ao processar:", erro);
         res.status(500).json({ sucesso: false, erro: "Erro interno no servidor." });
     }
 });
