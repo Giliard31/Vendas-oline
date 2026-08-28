@@ -11,10 +11,12 @@
         header { background: #2563eb; color: white; padding: 20px; text-align: center; }
         .container { padding: 20px; max-width: 600px; margin: auto; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .produto-card { text-align: left; border-left: 4px solid #2563eb; }
+        .produto-card { text-align: left; }
+        .produto-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
-        button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 10px; }
+        input[type="text"] { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; }
+        button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 5px; }
         button:hover { background: #1d4ed8; }
         .btn-secundario { background: #10b981; }
         .btn-secundario:hover { background: #059669; }
@@ -25,29 +27,29 @@
 
     <header>
         <h2>🔥 Super Ofertas & Achadinhos</h2>
-        <p>As melhores promoções da Shopee e Mercado Livre</p>
+        <p>Cadastre e envie promoções em segundos</p>
     </header>
 
     <div class="container">
-        <!-- Caixa de Alerta de Notificações -->
-        <div class="card" style="text-align: center;">
-            <h3>Não perca nenhuma promoção!</h3>
-            <p>Ative as notificações para receber alertas relâmpago direto no seu celular.</p>
-            <button class="btn-secundario" onclick="ativarNotificacoes()">🔔 Ativar Alertas de Ofertas</button>
+        <!-- Painel de Cadastro Rápido por Link -->
+        <div class="card">
+            <h3>Cadastrar Novo Produto 🔗</h3>
+            <p>Cole o link do seu afiliado (Shopee/Mercado Livre) abaixo:</p>
+            <input type="text" id="input-link" placeholder="https://shopee.com.br/seu-link-aqui">
+            <button class="btn-secundario" onclick="cadastrarPorLink()">🚀 Publicar na Vitrine</button>
         </div>
 
-        <!-- Onde os produtos reais vão aparecer automaticamente -->
+        <!-- Vitrine de Produtos -->
         <div id="lista-produtos">
-            <p style="text-align: center; color: #666;">Carregando ofertas em tempo real...</p>
+            <p style="text-align: center; color: #666;">Carregando ofertas...</p>
         </div>
 
-        <!-- Contador Geral de Cliques -->
         <div class="card stats">
             Cliques totais no app: <span id="contador-cliques">0</span>
         </div>
     </div>
 
-    <!-- Script do Firebase e Firestore -->
+    <!-- Script do Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -65,13 +67,12 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Função para carregar os produtos cadastrados no Firebase
         async function carregarProdutos() {
             const container = document.getElementById('lista-produtos');
             try {
                 const querySnapshot = await getDocs(collection(db, "produtos"));
                 if (querySnapshot.empty) {
-                    container.innerHTML = '<div class="card" style="text-align: center;"><p>Nenhuma oferta cadastrada no momento. Volte em breve!</p></div>';
+                    container.innerHTML = '<div class="card" style="text-align: center;"><p>Nenhuma oferta cadastrada ainda.</p></div>';
                     return;
                 }
 
@@ -80,9 +81,10 @@
                     const prod = docSnap.data();
                     htmlProdutos += `
                         <div class="card produto-card">
-                            <div class="produto-titulo">${prod.titulo || 'Produto Incrível'}</div>
-                            <div class="produto-preco">R$ ${prod.preco || '0,00'}</div>
-                            <p>${prod.descricao || ''}</p>
+                            <img src="${prod.imagem || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'}" alt="Produto">
+                            <div class="produto-titulo">${prod.titulo}</div>
+                            <div class="produto-preco">R$ ${prod.preco}</div>
+                            <p>${prod.descricao}</p>
                             <button onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
                         </div>
                     `;
@@ -90,11 +92,9 @@
                 container.innerHTML = htmlProdutos;
             } catch (erro) {
                 console.error("Erro ao carregar produtos:", erro);
-                container.innerHTML = '<div class="card" style="text-align: center;"><p>Erro ao carregar as ofertas.</p></div>';
             }
         }
 
-        // Função para carregar e atualizar o contador geral de cliques
         async function carregarCliques() {
             try {
                 const docRef = doc(db, "estatisticas", "cliquesOfertas");
@@ -110,34 +110,45 @@
         carregarProdutos();
         carregarCliques();
 
-        // Ação ao clicar no produto do afiliado
+        // Envia o link para o servidor do Render cadastrar
+        window.cadastrarPorLink = async function() {
+            const link = document.getElementById('input-link').value;
+            if (!link) {
+                alert("Por favor, cole um link válido!");
+                return;
+            }
+
+            try {
+                // Pega a URL do seu Render (substitua pelo seu link oficial do Render se precisar, ou rota relativa)
+                const resposta = await fetch('/adicionar-produto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ linkAfiliado: link })
+                });
+
+                const resultado = await resposta.json();
+                if (resultado.sucesso) {
+                    alert("Oferta publicada com sucesso!");
+                    document.getElementById('input-link').value = '';
+                    carregarProdutos(); // Atualiza a tela
+                } else {
+                    alert("Erro ao cadastrar oferta.");
+                }
+            } catch (erro) {
+                console.error("Erro na requisição:", erro);
+                alert("Erro ao conectar com o servidor de cadastro.");
+            }
+        }
+
         window.clicarProduto = async function(idProduto, linkAfiliado) {
             try {
                 const docRef = doc(db, "estatisticas", "cliquesOfertas");
                 await updateDoc(docRef, { total: increment(1) });
                 carregarCliques();
-
-                // Abre o seu link de afiliado da Shopee/Mercado Livre numa aba nova
                 window.open(linkAfiliado, '_blank');
             } catch (erro) {
-                console.error("Erro ao registrar clique:", erro);
                 window.open(linkAfiliado, '_blank');
             }
-        }
-
-        window.ativarNotificacoes = function() {
-            Notification.requestPermission().then((permission) => {
-                if (permission === 'granted') {
-                    alert("Sucesso! Agora você receberá notificações de ofertas.");
-                } else {
-                    alert("Permissão negada.");
-                }
-            });
-        }
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch((err) => console.log(err));
         }
     </script>
 </body>
