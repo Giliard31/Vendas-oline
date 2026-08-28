@@ -52,7 +52,7 @@
     <!-- Script do Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyC75L1-BhKHuwAf21o2ORV6UMHK0JVvcmQ",
@@ -119,7 +119,7 @@
 
             try {
                 // ⚠️ COLOQUE O LINK EXATO DO SEU RENDER AQUI EMBAIXO:
-                const resposta = await fetch('https://vendas-oline.onrender.com/adicionar-produto', {
+                const resposta = await fetch('https://SEU-PROJETO.onrender.com/adicionar-produto', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ linkAfiliado: link })
@@ -127,6 +127,9 @@
 
                 const resultado = await resposta.json();
                 if (resultado.sucesso) {
+                    // Salva direto no banco usando a sessão autenticada do app
+                    await addDoc(collection(db, "produtos"), resultado.produto);
+                    
                     alert("Oferta publicada com sucesso!");
                     document.getElementById('input-link').value = '';
                     carregarProdutos();
@@ -135,7 +138,7 @@
                 }
             } catch (erro) {
                 console.error("Erro na requisição:", erro);
-                alert("Erro ao conectar com o servidor de cadastro.");
+                alert("Erro ao conectar com o servidor.");
             }
         }
 
