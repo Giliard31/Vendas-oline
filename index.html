@@ -9,7 +9,7 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
         
-        /* Cabeçalho Fixo apenas com o Banner e itens centralizados */
+        /* Cabeçalho Fixo com Banner */
         header { 
             position: fixed; 
             top: 0; 
@@ -17,18 +17,17 @@
             width: 100%; 
             background: #000;
             color: white; 
-            padding: 8px; 
+            padding: 6px; 
             text-align: center; 
             z-index: 1000; 
             box-shadow: 0 3px 10px rgba(0,0,0,0.4);
             box-sizing: border-box;
         }
 
-        /* Container do Banner com efeito escuro leve para destacar os textos por cima */
         .banner-container {
             position: relative;
             width: 100%;
-            height: 125px;
+            height: 135px;
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
@@ -38,10 +37,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.7); /* Deixa a imagem um pouco mais escura para o texto destacar bem */
+            filter: brightness(0.65);
         }
 
-        /* Conteúdo centralizado em cima do Banner */
         .banner-conteudo {
             position: absolute;
             top: 0;
@@ -56,17 +54,17 @@
             box-sizing: border-box;
         }
         
-        /* Nome da página destacado e centralizado */
+        /* Nome da página bem maior e destacado */
         header h2 { 
             margin: 0 0 6px 0; 
-            font-size: 18px; 
+            font-size: 21px; 
             font-weight: 900; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-            letter-spacing: 0.5px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.95);
+            letter-spacing: 0.8px;
             text-align: center;
         }
         
-        /* Área de Login/Cadastro centralizada sobre o banner */
+        /* Área de Login/Cadastro Centralizada */
         .header-auth {
             display: flex;
             justify-content: center;
@@ -100,15 +98,28 @@
         
         .link-topo { color: #fff; font-size: 11px; text-decoration: underline; cursor: pointer; margin-left: 4px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        /* Espaçamento adaptado para o novo tamanho do topo fixo */
-        .container { padding: 145px 15px 20px 15px; max-width: 600px; margin: auto; }
+        /* Espaçamento adaptado para o topo fixo */
+        .container { padding: 155px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .produto-card { text-align: left; }
+        .produto-card { text-align: left; position: relative; }
         .produto-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
-        .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
+        .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 4px; }
         
+        /* Caixa do Cronômetro Regressivo nos Produtos */
+        .timer-oferta {
+            display: inline-block;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
         input[type="text"], input[type="file"] { 
             width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; background: #fff; 
         }
@@ -119,7 +130,7 @@
         .btn-apagar { background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; margin-top: 10px; }
         .btn-apagar:hover { background: #b91c1c; }
         
-        /* Popup Flutuante de Notificação (Ativado por 3 cliques) */
+        /* Popups Flutuantes */
         #popup-notif {
             position: fixed;
             bottom: 20px;
@@ -148,7 +159,6 @@
             font-size: 13px;
         }
 
-        /* Popup Flutuante de Instalação (PWA) */
         #popup-instalar {
             position: fixed;
             bottom: 20px;
@@ -190,21 +200,20 @@
         <span style="display:block; margin-top:8px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupInstalar()">Agora não</span>
     </div>
 
-    <!-- Popup Flutuante de Notificação (Ativado por 3 cliques na tela) -->
+    <!-- Popup Flutuante de Notificação (Ativado por 3 cliques) -->
     <div id="popup-notif">
         <p style="margin: 0; font-size: 13px; font-weight: bold;">🔔 Deseja ativar os alertas para receber achadinhos no celular?</p>
         <button onclick="ativarNotificacoes(); fecharPopupNotif();">Sim, Ativar Agora!</button>
         <span style="display:block; margin-top:6px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Fechar</span>
     </div>
 
-    <!-- Cabeçalho Fixo apenas com o Banner e Textos Centralizados -->
+    <!-- Cabeçalho Fixo com Banner e Título Maior -->
     <header>
         <div class="banner-container">
             <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80" alt="Banner Ofertas" class="banner-topo">
             <div class="banner-conteudo">
                 <h2>🔥 SUPER OFERTAS & ACHADINHOS</h2>
                 
-                <!-- Área de Login / Cadastro Centralizada -->
                 <div class="header-auth" id="bloco-auth-topo">
                     <input type="email" id="auth-email" placeholder="E-mail">
                     <input type="password" id="auth-senha" placeholder="Senha">
@@ -218,7 +227,7 @@
 
     <div class="container">
         
-        <!-- PAINEL DE ADMINISTRAÇÃO (Só aparece se o Admin logar) -->
+        <!-- PAINEL DE ADMINISTRAÇÃO -->
         <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
             <h3 style="color: #2563eb; margin-top: 0;">🔒 Painel do Administrador</h3>
             <p id="info-admin" style="font-size: 12px; color: #666;"></p>
@@ -238,7 +247,7 @@
             <button class="btn-principal" style="background: #10b981;" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
         </div>
 
-        <!-- Vitrine de Produtos (Pública) -->
+        <!-- Vitrine de Produtos -->
         <div id="lista-produtos">
             <p style="text-align: center; color: #666;">Carregando ofertas...</p>
         </div>
@@ -248,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Script do Firebase e PWA -->
+    <!-- Script do Firebase, PWA e Cronômetro -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -273,6 +282,37 @@
         let usuarioAtualAdmin = false;
         let eventoInstalacaoPWA = null;
 
+        // Lógica do Cronômetro Regressivo de 15 minutos ao abrir o app
+        function iniciarCronometroGlobal() {
+            let tempoFim = localStorage.getItem('tempoFimOferta');
+            if (!tempoFim) {
+                // Define 15 minutos a partir de agora
+                tempoFim = Date.now() + 15 * 60 * 1000;
+                localStorage.setItem('tempoFimOferta', tempoFim);
+            }
+
+            setInterval(() => {
+                const agora = Date.now();
+                let distancia = tempoFim - agora;
+
+                if (distancia < 0) {
+                    // Reinicia o ciclo de 15 minutos automaticamente se zerar
+                    tempoFim = Date.now() + 15 * 60 * 1000;
+                    localStorage.setItem('tempoFimOferta', tempoFim);
+                    distancia = tempoFim - agora;
+                }
+
+                const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+                const textoFormatado = `⏱️ Expira em: ${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+                
+                document.querySelectorAll('.timer-oferta').forEach(el => {
+                    el.innerText = textoFormatado;
+                });
+            }, 1000);
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             eventoInstalacaoPWA = e;
@@ -285,9 +325,6 @@
             if (eventoInstalacaoPWA) {
                 eventoInstalacaoPWA.prompt();
                 const escolha = await eventoInstalacaoPWA.userChoice;
-                if (escolha.outcome === 'accepted') {
-                    console.log('Usuário aceitou instalar o app');
-                }
                 eventoInstalacaoPWA = null;
                 document.getElementById('popup-instalar').style.display = 'none';
             } else {
@@ -326,49 +363,30 @@
         window.realizarLogin = async function() {
             const email = document.getElementById('auth-email').value;
             const senha = document.getElementById('auth-senha').value;
-
-            if (!email || !senha) {
-                alert("Digite o e-mail e a senha para entrar!");
-                return;
-            }
-
+            if (!email || !senha) { alert("Digite o e-mail e a senha para entrar!"); return; }
             try {
                 await signInWithEmailAndPassword(auth, email, senha);
                 alert("Login realizado com sucesso!");
-            } catch (erro) {
-                alert("Erro ao entrar: " + erro.message);
-            }
+            } catch (erro) { alert("Erro ao entrar: " + erro.message); }
         }
 
         window.criarConta = async function() {
             const email = document.getElementById('auth-email').value;
             const senha = document.getElementById('auth-senha').value;
-
-            if (!email || !senha) {
-                alert("Digite o e-mail e uma senha nos campos acima para criar sua conta!");
-                return;
-            }
-
+            if (!email || !senha) { alert("Digite o e-mail e uma senha nos campos acima para criar sua conta!"); return; }
             try {
                 await createUserWithEmailAndPassword(auth, email, senha);
                 alert("Conta criada e logada com sucesso!");
-            } catch (erro) {
-                alert("Erro ao criar conta: " + erro.message);
-            }
+            } catch (erro) { alert("Erro ao criar conta: " + erro.message); }
         }
 
         window.esqueciSenha = async function() {
             const email = document.getElementById('auth-email').value;
-            if (!email) {
-                alert("Digite o seu e-mail no campo de e-mail lá em cima primeiro.");
-                return;
-            }
+            if (!email) { alert("Digite o seu e-mail no campo de e-mail lá em cima primeiro."); return; }
             try {
                 await sendPasswordResetEmail(auth, email);
-                alert("E-mail de recuperação enviado! Verifique sua caixa de entrada e spam.");
-            } catch (erro) {
-                alert("Erro: " + erro.message);
-            }
+                alert("E-mail de recuperação enviado!");
+            } catch (erro) { alert("Erro: " + erro.message); }
         }
 
         window.fazerLogout = async function() {
@@ -376,24 +394,21 @@
             alert("Você saiu da conta.");
         }
 
-        // ⚠️ LEMBRE-SE DE COLOCAR O SEU E-MAIL EXATO DE ADMIN AQUI:
+        // ⚠️ COLOQUE SEU E-MAIL DE ADMIN AQUI:
         const EMAIL_ADMIN_OFICIAL = "giliardmartins31@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
             const blocoAuth = document.getElementById('bloco-auth-topo');
-            
             if (user) {
                 blocoAuth.innerHTML = `
                     <span style="font-size: 11px; max-width: 110px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">👤 ${user.email.split('@')[0]}</span>
                     <button class="btn-sair-topo" onclick="fazerLogout()">Sair</button>
                 `;
-
-                if (user.email === EMAIL_ADMIN_OFICIAL) {
-                    usuarioAtualAdmin = true;
+                usuarioAtualAdmin = (user.email === EMAIL_ADMIN_OFICIAL);
+                if (usuarioAtualAdmin) {
                     document.getElementById('painel-admin').classList.remove('escondido');
                     document.getElementById('info-admin').innerText = "Logado como Admin: " + user.email;
                 } else {
-                    usuarioAtualAdmin = false;
                     document.getElementById('painel-admin').classList.add('escondido');
                 }
                 carregarProdutos();
@@ -423,16 +438,13 @@
                 let htmlProdutos = '';
                 querySnapshot.forEach((docSnap) => {
                     const prod = docSnap.data();
-                    
-                    let botaoApagarHTML = '';
-                    if (usuarioAtualAdmin) {
-                        botaoApagarHTML = `<button class="btn-apagar" onclick="apagarProduto('${docSnap.id}')">🗑️ Apagar Anúncio</button>`;
-                    }
+                    let botaoApagarHTML = usuarioAtualAdmin ? `<button class="btn-apagar" onclick="apagarProduto('${docSnap.id}')">🗑️ Apagar Anúncio</button>` : '';
 
                     htmlProdutos += `
                         <div class="card produto-card">
                             <img src="${prod.imagem}" alt="Produto">
                             <div class="produto-titulo">${prod.titulo}</div>
+                            <div class="timer-oferta">⏱️ Expira em: 15:00</div>
                             <div class="produto-preco">R$ ${prod.preco}</div>
                             <p>${prod.descricao || 'Garanta já o seu!'}</p>
                             <button class="btn-principal" onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
@@ -441,21 +453,19 @@
                     `;
                 });
                 container.innerHTML = htmlProdutos;
+                iniciarCronometroGlobal();
             } catch (erro) {
                 console.error("Erro ao carregar produtos:", erro);
             }
         }
 
         window.apagarProduto = async function(idProduto) {
-            if (confirm("Tem certeza que deseja apagar este anúncio da vitrine?")) {
+            if (confirm("Tem certeza que deseja apagar este anúncio?")) {
                 try {
                     await deleteDoc(doc(db, "produtos", idProduto));
                     alert("Produto apagado com sucesso!");
                     carregarProdutos();
-                } catch (erro) {
-                    console.error("Erro ao apagar:", erro);
-                    alert("Erro ao tentar apagar o produto.");
-                }
+                } catch (erro) { alert("Erro ao apagar."); }
             }
         }
 
@@ -466,9 +476,7 @@
                 if (docSnap.exists()) {
                     document.getElementById('contador-cliques').innerText = docSnap.data().total || 0;
                 }
-            } catch (erro) {
-                console.error("Erro ao carregar cliques:", erro);
-            }
+            } catch (erro) { console.error("Erro cliques:", erro); }
         }
 
         carregarProdutos();
@@ -504,17 +512,13 @@
                 };
 
                 await addDoc(collection(db, "produtos"), novoProduto);
-                
                 alert("Produto publicado com sucesso!");
                 fileInput.value = '';
                 document.getElementById('input-titulo').value = '';
                 document.getElementById('input-preco').value = '';
                 document.getElementById('input-link').value = '';
                 carregarProdutos();
-            } catch (erro) {
-                console.error("Erro ao cadastrar:", erro);
-                alert("Erro ao enviar produto.");
-            }
+            } catch (erro) { alert("Erro ao enviar produto."); }
         }
 
         window.clicarProduto = async function(idProduto, linkAfiliado) {
@@ -522,10 +526,8 @@
                 const docRef = doc(db, "estatisticas", "cliquesOfertas");
                 await updateDoc(docRef, { total: increment(1) });
                 carregarCliques();
-                window.open(linkAfiliado, '_blank');
-            } catch (erro) {
-                window.open(linkAfiliado, '_blank');
-            }
+            } catch (e) {}
+            window.open(linkAfiliado, '_blank');
         }
 
         window.ativarNotificacoes = function() {
