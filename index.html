@@ -151,7 +151,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Modal de Confirmação Profissional (Substitui o confirm() nativo) */
+        /* Modal de Confirmação Profissional */
         #modal-confirmacao {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -300,7 +300,6 @@
         let usuarioAtualAdmin = false;
         let eventoInstalacaoPWA = null;
 
-        // Função profissional para exibir avisos elegantes na tela
         window.mostrarAviso = function(mensagem, corBorda = "#10b981") {
             const toast = document.getElementById('toast-aviso');
             toast.innerText = mensagem;
@@ -308,10 +307,9 @@
             toast.classList.add('mostrar');
             setTimeout(() => {
                 toast.classList.remove('mostrar');
-            }, 3500);
+            }, 5000);
         }
 
-        // Função de Confirmação customizada (substitui o confirm do navegador)
         let funcaoCallbackConfirmar = null;
         window.abrirModalConfirmacao = function(texto, callback) {
             document.getElementById('modal-texto-pergunta').innerText = texto;
@@ -331,7 +329,6 @@
             fecharModalConfirmacao(true);
         });
 
-        // Cronômetro Regressivo de 15 minutos
         function iniciarCronometroGlobal() {
             let tempoFim = localStorage.getItem('tempoFimOferta');
             if (!tempoFim) {
@@ -439,8 +436,8 @@
             mostrarAviso("Você saiu da conta.");
         }
 
-        // ⚠️ COLOQUE SEU E-MAIL DE ADMIN AQUI:
-        const EMAIL_ADMIN_OFICIAL = "giliardmartins31@gmail.com";
+        // ⚠️ COLOQUE SEU E-MAIL DE ADMIN AQUI EXATO:
+        const EMAIL_ADMIN_OFICIAL ="giliardmartins31@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
             const blocoAuth = document.getElementById('bloco-auth-topo');
@@ -527,6 +524,7 @@
         carregarProdutos();
         carregarCliques();
 
+        // Função de cadastro com tratamento e exibição exata de erros na tela
         window.cadastrarComFoto = async function() {
             const fileInput = document.getElementById('input-arquivo');
             const titulo = document.getElementById('input-titulo').value;
@@ -543,9 +541,13 @@
             const storageRef = ref(storage, nomeArquivo);
 
             try {
-                mostrarAviso("Publicando produto na vitrine...", "#2563eb");
+                mostrarAviso("Fazendo upload da foto...", "#2563eb");
+                
+                // Tenta enviar a imagem pro Firebase Storage
                 const snapshot = await uploadBytes(storageRef, arquivo);
                 const urlImagem = await getDownloadURL(snapshot.ref);
+
+                mostrarAviso("Salvando na vitrine...", "#2563eb");
 
                 const novoProduto = {
                     titulo: titulo,
@@ -556,14 +558,20 @@
                     criadoEm: new Date().toISOString()
                 };
 
+                // Tenta salvar os dados no Firestore
                 await addDoc(collection(db, "produtos"), novoProduto);
-                mostrarAviso("Produto publicado com sucesso!");
+                
+                mostrarAviso("✨ Produto publicado com sucesso!");
                 fileInput.value = '';
                 document.getElementById('input-titulo').value = '';
                 document.getElementById('input-preco').value = '';
                 document.getElementById('input-link').value = '';
                 carregarProdutos();
-            } catch (erro) { mostrarAviso("Erro ao enviar produto.", "#ef4444"); }
+            } catch (erro) {
+                console.error("DETALHE DO ERRO:", erro);
+                // Exibe o erro exato na tarja vermelha para sabermos o motivo
+                mostrarAviso("Erro: " + erro.message, "#ef4444");
+            }
         }
 
         window.clicarProduto = async function(idProduto, linkAfiliado) {
