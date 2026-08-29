@@ -12,7 +12,7 @@
         .container { padding: 20px; max-width: 600px; margin: auto; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
-        .produto-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .produto-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
         input[type="text"] { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; }
@@ -27,16 +27,19 @@
 
     <header>
         <h2>🔥 Super Ofertas & Achadinhos</h2>
-        <p>Cole o link e o robô publica para você</p>
+        <p>Sua vitrine de promoções em tempo real</p>
     </header>
 
     <div class="container">
-        <!-- Painel de Cadastro Automático -->
+        <!-- Painel de Cadastro Perfeito -->
         <div class="card">
-            <h3>Cadastrar por Link 🔗</h3>
-            <p>Cole o link da Shopee ou Mercado Livre:</p>
-            <input type="text" id="input-link" placeholder="https://shopee.com.br/...">
-            <button class="btn-secundario" onclick="cadastrarAutomatico()">🚀 Puxar e Publicar na Vitrine</button>
+            <h3>Cadastrar Achadinho 🚀</h3>
+            <p>Insira os dados reais do produto:</p>
+            <input type="text" id="input-titulo" placeholder="Nome do produto (ex: Óculos de Sol Esportivo)">
+            <input type="text" id="input-preco" placeholder="Preço (ex: 39,90)">
+            <input type="text" id="input-imagem" placeholder="Link da foto (clique com botão direito na foto do produto e copie o link da imagem)">
+            <input type="text" id="input-link" placeholder="Seu link de afiliado (Shopee/Mercado Livre)">
+            <button class="btn-secundario" onclick="cadastrarProduto()">✨ Publicar na Vitrine</button>
         </div>
 
         <!-- Vitrine de Produtos -->
@@ -84,7 +87,7 @@
                             <img src="${prod.imagem}" alt="Produto">
                             <div class="produto-titulo">${prod.titulo}</div>
                             <div class="produto-preco">R$ ${prod.preco}</div>
-                            <p>${prod.descricao}</p>
+                            <p>${prod.descricao || 'Garanta já o seu com frete rápido!'}</p>
                             <button onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
                         </div>
                     `;
@@ -110,35 +113,38 @@
         carregarProdutos();
         carregarCliques();
 
-        window.cadastrarAutomatico = async function() {
+        window.cadastrarProduto = async function() {
+            const titulo = document.getElementById('input-titulo').value;
+            const preco = document.getElementById('input-preco').value;
+            const imagem = document.getElementById('input-imagem').value;
             const link = document.getElementById('input-link').value;
-            if (!link) {
-                alert("Por favor, cole um link válido!");
+
+            if (!titulo || !preco || !imagem || !link) {
+                alert("Por favor, preencha todos os campos para a oferta ficar perfeita!");
                 return;
             }
 
             try {
-                alert("Robô lendo o link... Aguarde um instante.");
-                
-                // ⚠️ COLOQUE O LINK EXATO DO SEU RENDER AQUI EMBAIXO:
-                const resposta = await fetch('https://vendas-oline.onrender.com/adicionar-produto', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ linkAfiliado: link })
-                });
+                const novoProduto = {
+                    titulo: titulo,
+                    preco: preco,
+                    descricao: "Achadinho selecionado especialmente para você.",
+                    imagem: imagem,
+                    linkAfiliado: link,
+                    criadoEm: new Date().toISOString()
+                };
 
-                const resultado = await resposta.json();
-                if (resultado.sucesso) {
-                    await addDoc(collection(db, "produtos"), resultado.produto);
-                    alert("Oferta publicada com sucesso!");
-                    document.getElementById('input-link').value = '';
-                    carregarProdutos();
-                } else {
-                    alert("Erro ao ler o link.");
-                }
+                await addDoc(collection(db, "produtos"), novoProduto);
+                
+                alert("Oferta publicada com sucesso na sua vitrine!");
+                document.getElementById('input-titulo').value = '';
+                document.getElementById('input-preco').value = '';
+                document.getElementById('input-imagem').value = '';
+                document.getElementById('input-link').value = '';
+                carregarProdutos();
             } catch (erro) {
-                console.error("Erro na requisição:", erro);
-                alert("Erro ao conectar com o robô.");
+                console.error("Erro ao cadastrar:", erro);
+                alert("Erro ao salvar produto.");
             }
         }
 
