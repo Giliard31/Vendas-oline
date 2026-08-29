@@ -9,55 +9,79 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
         
-        /* Cabeçalho Fixo no Topo */
+        /* Cabeçalho Fixo apenas com o Banner e itens centralizados */
         header { 
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
-            background: #2563eb;
+            background: #000;
             color: white; 
-            padding: 10px 10px 8px 10px; 
+            padding: 8px; 
             text-align: center; 
             z-index: 1000; 
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+            box-sizing: border-box;
+        }
+
+        /* Container do Banner com efeito escuro leve para destacar os textos por cima */
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 125px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .banner-topo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7); /* Deixa a imagem um pouco mais escura para o texto destacar bem */
+        }
+
+        /* Conteúdo centralizado em cima do Banner */
+        .banner-conteudo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
             box-sizing: border-box;
         }
         
-        /* Nome da página destacado */
+        /* Nome da página destacado e centralizado */
         header h2 { 
-            margin: 0 0 5px 0; 
-            font-size: 19px; 
+            margin: 0 0 6px 0; 
+            font-size: 18px; 
             font-weight: 900; 
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
             letter-spacing: 0.5px;
-        }
-
-        /* Banner de Destaque Logo Abaixo do Nome */
-        .banner-topo {
-            width: 100%;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-align: center;
         }
         
-        /* Área de Login/Cadastro no Topo */
+        /* Área de Login/Cadastro centralizada sobre o banner */
         .header-auth {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 5px;
             flex-wrap: wrap;
+            width: 100%;
         }
         .header-auth input {
             padding: 5px 8px;
             font-size: 11px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            width: 110px;
-            background: #ffffff;
+            width: 105px;
+            background: rgba(255, 255, 255, 0.95);
         }
         .header-auth button {
             padding: 5px 10px;
@@ -68,15 +92,16 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
         .header-auth button:hover { background: #059669; }
         .btn-sair-topo { background: #dc2626 !important; }
         .btn-sair-topo:hover { background: #b91c1c !important; }
         
-        .link-topo { color: #f3f4f6; font-size: 11px; text-decoration: underline; cursor: pointer; margin-left: 4px; font-weight: bold; }
+        .link-topo { color: #fff; font-size: 11px; text-decoration: underline; cursor: pointer; margin-left: 4px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        /* Espaçamento adaptado para o topo fixo maior */
-        .container { padding: 185px 15px 20px 15px; max-width: 600px; margin: auto; }
+        /* Espaçamento adaptado para o novo tamanho do topo fixo */
+        .container { padding: 145px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
@@ -172,20 +197,22 @@
         <span style="display:block; margin-top:6px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Fechar</span>
     </div>
 
-    <!-- Cabeçalho Fixo com Banner -->
+    <!-- Cabeçalho Fixo apenas com o Banner e Textos Centralizados -->
     <header>
-        <h2>🔥 SUPER OFERTAS & ACHADINHOS</h2>
-        
-        <!-- Banner de Destaque Logo Abaixo do Nome -->
-        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80" alt="Banner Ofertas" class="banner-topo">
-
-        <!-- Área de Login / Cadastro Compacta no Topo -->
-        <div class="header-auth" id="bloco-auth-topo">
-            <input type="email" id="auth-email" placeholder="E-mail">
-            <input type="password" id="auth-senha" placeholder="Senha">
-            <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
-            <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
-            <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
+        <div class="banner-container">
+            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80" alt="Banner Ofertas" class="banner-topo">
+            <div class="banner-conteudo">
+                <h2>🔥 SUPER OFERTAS & ACHADINHOS</h2>
+                
+                <!-- Área de Login / Cadastro Centralizada -->
+                <div class="header-auth" id="bloco-auth-topo">
+                    <input type="email" id="auth-email" placeholder="E-mail">
+                    <input type="password" id="auth-senha" placeholder="Senha">
+                    <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
+                    <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
+                    <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -246,11 +273,9 @@
         let usuarioAtualAdmin = false;
         let eventoInstalacaoPWA = null;
 
-        // Captura o evento nativo do navegador para instalar o aplicativo
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             eventoInstalacaoPWA = e;
-            // Mostra o popup de instalação personalizado
             setTimeout(() => {
                 document.getElementById('popup-instalar').style.display = 'block';
             }, 2000);
@@ -274,7 +299,6 @@
             document.getElementById('popup-instalar').style.display = 'none';
         }
 
-        // Gatilho secreto de 3 cliques na tela para exibir o pop-up de notificações
         let contadorCliquesTela = 0;
         let tempoUltimoClique = 0;
 
@@ -360,7 +384,7 @@
             
             if (user) {
                 blocoAuth.innerHTML = `
-                    <span style="font-size: 11px; max-width: 110px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold;">👤 ${user.email.split('@')[0]}</span>
+                    <span style="font-size: 11px; max-width: 110px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">👤 ${user.email.split('@')[0]}</span>
                     <button class="btn-sair-topo" onclick="fazerLogout()">Sair</button>
                 `;
 
