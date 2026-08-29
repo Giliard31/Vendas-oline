@@ -54,7 +54,7 @@
             box-sizing: border-box;
         }
         
-        /* Nome da página bem maior e destacado */
+        /* Título Maior e Destacado */
         header h2 { 
             margin: 0 0 6px 0; 
             font-size: 21px; 
@@ -64,7 +64,7 @@
             text-align: center;
         }
         
-        /* Área de Login/Cadastro Centralizada */
+        /* Área de Login / Cadastro */
         .header-auth {
             display: flex;
             justify-content: center;
@@ -98,7 +98,6 @@
         
         .link-topo { color: #fff; font-size: 11px; text-decoration: underline; cursor: pointer; margin-left: 4px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        /* Espaçamento adaptado para o topo fixo */
         .container { padding: 155px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
@@ -107,7 +106,6 @@
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 4px; }
         
-        /* Caixa do Cronômetro Regressivo nos Produtos */
         .timer-oferta {
             display: inline-block;
             background: #fef2f2;
@@ -130,68 +128,88 @@
         .btn-apagar { background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; margin-top: 10px; }
         .btn-apagar:hover { background: #b91c1c; }
         
-        /* Popups Flutuantes */
-        #popup-notif {
+        /* Sistema de Alerta Profissional (Toast Flutuante) */
+        #toast-aviso {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 14px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            z-index: 2000;
-            display: none;
-            max-width: 90%;
-            text-align: center;
-            border: 2px solid #38bdf8;
-        }
-        #popup-notif button {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 8px;
-            font-size: 13px;
-        }
-
-        #popup-instalar {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(-100px);
             background: #0f172a;
             color: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            z-index: 2000;
-            display: none;
-            max-width: 90%;
-            text-align: center;
-            border: 2px solid #10b981;
-        }
-        #popup-instalar button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 9px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
+            padding: 12px 22px;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            z-index: 3000;
             font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            border-left: 5px solid #10b981;
+            transition: transform 0.3s ease-in-out;
+            max-width: 90%;
         }
+        #toast-aviso.mostrar {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Modal de Confirmação Profissional (Substitui o confirm() nativo) */
+        #modal-confirmacao {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3500;
+        }
+        .modal-caixa {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .modal-caixa p { font-size: 15px; font-weight: bold; margin-bottom: 20px; color: #1e293b; }
+        .modal-botoes { display: flex; gap: 10px; justify-content: center; }
+        .modal-botoes button { padding: 10px 18px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 14px; width: 50%; }
+        .btn-modal-sim { background: #dc2626; color: white; }
+        .btn-modal-nao { background: #e2e8f0; color: #334155; }
+
+        /* Popups Flutuantes */
+        #popup-notif {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #1e293b; color: white; padding: 14px 20px; border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 2000; display: none; max-width: 90%; text-align: center; border: 2px solid #38bdf8;
+        }
+        #popup-notif button { background: #10b981; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 8px; font-size: 13px; }
+
+        #popup-instalar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #0f172a; color: white; padding: 16px 20px; border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 2000; display: none; max-width: 90%; text-align: center; border: 2px solid #10b981;
+        }
+        #popup-instalar button { background: #2563eb; color: white; border: none; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; }
 
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
         .escondido { display: none; }
     </style>
 </head>
 <body>
+
+    <!-- Notificação Toast Profissional -->
+    <div id="toast-aviso">Mensagem do Sistema</div>
+
+    <!-- Modal de Confirmação Personalizado -->
+    <div id="modal-confirmacao">
+        <div class="modal-caixa">
+            <p id="modal-texto-pergunta">Tem certeza?</p>
+            <div class="modal-botoes">
+                <button class="btn-modal-nao" onclick="fecharModalConfirmacao(false)">Cancelar</button>
+                <button class="btn-modal-sim" id="btn-modal-sim-acao">Sim</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Popup Flutuante de Instalação do App -->
     <div id="popup-instalar">
@@ -200,14 +218,14 @@
         <span style="display:block; margin-top:8px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupInstalar()">Agora não</span>
     </div>
 
-    <!-- Popup Flutuante de Notificação (Ativado por 3 cliques) -->
+    <!-- Popup Flutuante de Notificação -->
     <div id="popup-notif">
         <p style="margin: 0; font-size: 13px; font-weight: bold;">🔔 Deseja ativar os alertas para receber achadinhos no celular?</p>
         <button onclick="ativarNotificacoes(); fecharPopupNotif();">Sim, Ativar Agora!</button>
         <span style="display:block; margin-top:6px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Fechar</span>
     </div>
 
-    <!-- Cabeçalho Fixo com Banner e Título Maior -->
+    <!-- Cabeçalho Fixo com Banner -->
     <header>
         <div class="banner-container">
             <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80" alt="Banner Ofertas" class="banner-topo">
@@ -257,7 +275,7 @@
         </div>
     </div>
 
-    <!-- Script do Firebase, PWA e Cronômetro -->
+    <!-- Script do Firebase, PWA e Alertas Modernos -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -282,11 +300,41 @@
         let usuarioAtualAdmin = false;
         let eventoInstalacaoPWA = null;
 
-        // Lógica do Cronômetro Regressivo de 15 minutos ao abrir o app
+        // Função profissional para exibir avisos elegantes na tela
+        window.mostrarAviso = function(mensagem, corBorda = "#10b981") {
+            const toast = document.getElementById('toast-aviso');
+            toast.innerText = mensagem;
+            toast.style.borderLeftColor = corBorda;
+            toast.classList.add('mostrar');
+            setTimeout(() => {
+                toast.classList.remove('mostrar');
+            }, 3500);
+        }
+
+        // Função de Confirmação customizada (substitui o confirm do navegador)
+        let funcaoCallbackConfirmar = null;
+        window.abrirModalConfirmacao = function(texto, callback) {
+            document.getElementById('modal-texto-pergunta').innerText = texto;
+            document.getElementById('modal-confirmacao').style.display = 'flex';
+            funcaoCallbackConfirmar = callback;
+        }
+
+        window.fecharModalConfirmacao = function(resposta) {
+            document.getElementById('modal-confirmacao').style.display = 'none';
+            if (resposta && typeof funcaoCallbackConfirmar === 'function') {
+                funcaoCallbackConfirmar();
+            }
+            funcaoCallbackConfirmar = null;
+        }
+
+        document.getElementById('btn-modal-sim-acao').addEventListener('click', () => {
+            fecharModalConfirmacao(true);
+        });
+
+        // Cronômetro Regressivo de 15 minutos
         function iniciarCronometroGlobal() {
             let tempoFim = localStorage.getItem('tempoFimOferta');
             if (!tempoFim) {
-                // Define 15 minutos a partir de agora
                 tempoFim = Date.now() + 15 * 60 * 1000;
                 localStorage.setItem('tempoFimOferta', tempoFim);
             }
@@ -296,7 +344,6 @@
                 let distancia = tempoFim - agora;
 
                 if (distancia < 0) {
-                    // Reinicia o ciclo de 15 minutos automaticamente se zerar
                     tempoFim = Date.now() + 15 * 60 * 1000;
                     localStorage.setItem('tempoFimOferta', tempoFim);
                     distancia = tempoFim - agora;
@@ -304,7 +351,6 @@
 
                 const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
                 const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-
                 const textoFormatado = `⏱️ Expira em: ${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
                 
                 document.querySelectorAll('.timer-oferta').forEach(el => {
@@ -324,11 +370,10 @@
         document.getElementById('btn-instalar-app').addEventListener('click', async () => {
             if (eventoInstalacaoPWA) {
                 eventoInstalacaoPWA.prompt();
-                const escolha = await eventoInstalacaoPWA.userChoice;
                 eventoInstalacaoPWA = null;
                 document.getElementById('popup-instalar').style.display = 'none';
             } else {
-                alert("Para instalar, abra o menu do seu navegador (três pontinhos no topo) e selecione 'Adicionar à tela inicial' ou 'Instalar aplicativo'.");
+                mostrarAviso("Abra o menu do navegador e escolha 'Adicionar à tela inicial'.", "#f59e0b");
             }
         });
 
@@ -363,35 +408,35 @@
         window.realizarLogin = async function() {
             const email = document.getElementById('auth-email').value;
             const senha = document.getElementById('auth-senha').value;
-            if (!email || !senha) { alert("Digite o e-mail e a senha para entrar!"); return; }
+            if (!email || !senha) { mostrarAviso("Preencha o e-mail e a senha!", "#ef4444"); return; }
             try {
                 await signInWithEmailAndPassword(auth, email, senha);
-                alert("Login realizado com sucesso!");
-            } catch (erro) { alert("Erro ao entrar: " + erro.message); }
+                mostrarAviso("Login realizado com sucesso!");
+            } catch (erro) { mostrarAviso("Erro ao entrar: Verifique os dados.", "#ef4444"); }
         }
 
         window.criarConta = async function() {
             const email = document.getElementById('auth-email').value;
             const senha = document.getElementById('auth-senha').value;
-            if (!email || !senha) { alert("Digite o e-mail e uma senha nos campos acima para criar sua conta!"); return; }
+            if (!email || !senha) { mostrarAviso("Preencha o e-mail e uma senha!", "#ef4444"); return; }
             try {
                 await createUserWithEmailAndPassword(auth, email, senha);
-                alert("Conta criada e logada com sucesso!");
-            } catch (erro) { alert("Erro ao criar conta: " + erro.message); }
+                mostrarAviso("Conta criada com sucesso!");
+            } catch (erro) { mostrarAviso("Erro ao criar conta.", "#ef4444"); }
         }
 
         window.esqueciSenha = async function() {
             const email = document.getElementById('auth-email').value;
-            if (!email) { alert("Digite o seu e-mail no campo de e-mail lá em cima primeiro."); return; }
+            if (!email) { mostrarAviso("Digite seu e-mail no campo acima primeiro.", "#f59e0b"); return; }
             try {
                 await sendPasswordResetEmail(auth, email);
-                alert("E-mail de recuperação enviado!");
-            } catch (erro) { alert("Erro: " + erro.message); }
+                mostrarAviso("E-mail de recuperação enviado!");
+            } catch (erro) { mostrarAviso("Erro ao enviar e-mail.", "#ef4444"); }
         }
 
         window.fazerLogout = async function() {
             await signOut(auth);
-            alert("Você saiu da conta.");
+            mostrarAviso("Você saiu da conta.");
         }
 
         // ⚠️ COLOQUE SEU E-MAIL DE ADMIN AQUI:
@@ -438,7 +483,7 @@
                 let htmlProdutos = '';
                 querySnapshot.forEach((docSnap) => {
                     const prod = docSnap.data();
-                    let botaoApagarHTML = usuarioAtualAdmin ? `<button class="btn-apagar" onclick="apagarProduto('${docSnap.id}')">🗑️ Apagar Anúncio</button>` : '';
+                    let botaoApagarHTML = usuarioAtualAdmin ? `<button class="btn-apagar" onclick="pedirConfirmacaoApagar('${docSnap.id}')">🗑️ Apagar Anúncio</button>` : '';
 
                     htmlProdutos += `
                         <div class="card produto-card">
@@ -459,14 +504,14 @@
             }
         }
 
-        window.apagarProduto = async function(idProduto) {
-            if (confirm("Tem certeza que deseja apagar este anúncio?")) {
+        window.pedirConfirmacaoApagar = function(idProduto) {
+            abrirModalConfirmacao("Deseja realmente apagar este anúncio?", async () => {
                 try {
                     await deleteDoc(doc(db, "produtos", idProduto));
-                    alert("Produto apagado com sucesso!");
+                    mostrarAviso("Produto apagado com sucesso!");
                     carregarProdutos();
-                } catch (erro) { alert("Erro ao apagar."); }
-            }
+                } catch (erro) { mostrarAviso("Erro ao apagar produto.", "#ef4444"); }
+            });
         }
 
         async function carregarCliques() {
@@ -489,7 +534,7 @@
             const link = document.getElementById('input-link').value;
 
             if (fileInput.files.length === 0 || !titulo || !preco || !link) {
-                alert("Por favor, selecione uma foto e preencha todos os campos!");
+                mostrarAviso("Selecione uma foto e preencha todos os campos!", "#f59e0b");
                 return;
             }
 
@@ -498,7 +543,7 @@
             const storageRef = ref(storage, nomeArquivo);
 
             try {
-                alert("Enviando produto para a vitrine...");
+                mostrarAviso("Publicando produto na vitrine...", "#2563eb");
                 const snapshot = await uploadBytes(storageRef, arquivo);
                 const urlImagem = await getDownloadURL(snapshot.ref);
 
@@ -512,13 +557,13 @@
                 };
 
                 await addDoc(collection(db, "produtos"), novoProduto);
-                alert("Produto publicado com sucesso!");
+                mostrarAviso("Produto publicado com sucesso!");
                 fileInput.value = '';
                 document.getElementById('input-titulo').value = '';
                 document.getElementById('input-preco').value = '';
                 document.getElementById('input-link').value = '';
                 carregarProdutos();
-            } catch (erro) { alert("Erro ao enviar produto."); }
+            } catch (erro) { mostrarAviso("Erro ao enviar produto.", "#ef4444"); }
         }
 
         window.clicarProduto = async function(idProduto, linkAfiliado) {
@@ -533,9 +578,9 @@
         window.ativarNotificacoes = function() {
             Notification.requestPermission().then((permission) => {
                 if (permission === 'granted') {
-                    alert("Notificações ativadas com sucesso!");
+                    mostrarAviso("Notificações ativadas com sucesso!");
                 } else {
-                    alert("Permissão de notificação negada.");
+                    mostrarAviso("Permissão de notificação negada.", "#f59e0b");
                 }
             });
         }
