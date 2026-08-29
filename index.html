@@ -9,7 +9,7 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
         
-        /* Cabeçalho Fixo no Topo */
+        /* Cabeçalho Fixo Compacto no Topo */
         header { 
             position: fixed; 
             top: 0; 
@@ -17,17 +17,45 @@
             width: 100%; 
             background: #2563eb; 
             color: white; 
-            padding: 15px 10px; 
+            padding: 10px; 
             text-align: center; 
             z-index: 1000; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             box-sizing: border-box;
         }
-        header h2 { margin: 0; font-size: 20px; }
-        header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
+        header h2 { margin: 0; font-size: 16px; }
+        
+        /* Barra de Login Compacta no Topo */
+        .header-auth {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .header-auth input {
+            padding: 5px 8px;
+            font-size: 11px;
+            border: none;
+            border-radius: 4px;
+            width: 110px;
+        }
+        .header-auth button {
+            padding: 5px 10px;
+            font-size: 11px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .header-auth button:hover { background: #059669; }
+        .link-topo { color: #f3f4f6; font-size: 10px; text-decoration: underline; cursor: pointer; margin-left: 5px; }
 
-        /* Espaçamento para o conteúdo não ficar debaixo do cabeçalho fixo */
-        .container { padding: 130px 15px 20px 15px; max-width: 600px; margin: auto; }
+        /* Espaçamento adaptado para o topo fixo compacto */
+        .container { padding: 85px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
@@ -35,54 +63,48 @@
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
         
-        input[type="text"], input[type="password"], input[type="email"], input[type="file"] { 
+        input[type="text"], input[type="file"] { 
             width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; background: #fff; 
         }
         label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-bottom: 5px; }
         
-        button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 5px; }
-        button:hover { background: #1d4ed8; }
-        .btn-secundario { background: #10b981; }
-        .btn-secundario:hover { background: #059669; }
-        .btn-sair { background: #dc2626; margin-top: 10px; }
-        .btn-sair:hover { background: #b91c1c; }
+        button.btn-principal { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 5px; }
+        button.btn-principal:hover { background: #1d4ed8; }
+        .btn-apagar { background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; margin-top: 10px; }
+        .btn-apagar:hover { background: #b91c1c; }
         
-        .link-acao { color: #2563eb; cursor: pointer; text-align: center; display: block; margin-top: 10px; font-size: 14px; }
-        .link-acao:hover { text-decoration: underline; }
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
         .escondido { display: none; }
     </style>
 </head>
 <body>
 
+    <!-- Cabeçalho Fixo Compacto com Login e Alertas -->
     <header>
         <h2>🔥 Super Ofertas & Achadinhos</h2>
-        <p>As melhores promoções direto no seu celular</p>
+        
+        <!-- Área de Login Compacta no Topo -->
+        <div class="header-auth" id="bloco-auth-topo">
+            <input type="email" id="auth-email" placeholder="E-mail">
+            <input type="password" id="auth-senha" placeholder="Senha">
+            <button id="btn-acao-auth" onclick="realizarLoginOuCadastro()">Entrar</button>
+            <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
+            <span class="link-topo" onclick="ativarNotificacoes()">🔔 Alertas</span>
+        </div>
+
+        <!-- Cabeçalho quando logado -->
+        <div class="header-auth escondido" id="bloco-logado-topo">
+            <span id="info-usuario-topo" style="font-size: 11px; margin-right: 5px;"></span>
+            <button style="background: #dc2626;" onclick="fazerLogout()">Sair</button>
+            <button style="background: #0284c7;" onclick="ativarNotificacoes()">🔔 Alertas</button>
+        </div>
     </header>
 
     <div class="container">
         
-        <div class="card" style="text-align: center; background: #eff6ff; border: 1px solid #bfdbfe;">
-            <h4 style="margin: 0 0 8px 0; color: #1e40af;">🔔 Alertas de Ofertas</h4>
-            <p style="font-size: 13px; color: #475569; margin: 0 0 10px 0;">Ative para ser avisado quando um novo achadinho for postado.</p>
-            <button class="btn-secundario" style="padding: 8px 15px; font-size: 14px; width: auto;" onclick="ativarNotificacoes()">Ativar Notificações</button>
-        </div>
-
-        <div class="card" id="card-autenticacao">
-            <h3 id="titulo-auth">Entrar ou Criar Conta 👤</h3>
-            <p id="subtitulo-auth" style="font-size: 14px; color: #666;">Cadastre-se para acompanhar ou faça login se for o Administrador.</p>
-            
-            <input type="email" id="auth-email" placeholder="Seu e-mail">
-            <input type="password" id="auth-senha" placeholder="Sua senha">
-            
-            <button id="btn-acao-auth" onclick="realizarLoginOuCadastro()">Entrar / Cadastrar</button>
-            <span class="link-acao" id="link-esqueci" onclick="esqueciSenha()">Esqueci minha senha</span>
-            <span class="link-acao" id="link-alternar" onclick="alternarModoAuth()">Não tem conta? Cadastre-se</span>
-        </div>
-
+        <!-- PAINEL DE ADMINISTRAÇÃO (Só aparece se o Admin logar) -->
         <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
-            <h3 style="color: #2563eb;">🔒 Painel do Administrador</h3>
-            <p id="info-admin" style="font-size: 13px; color: #666;"></p>
+            <h3 style="color: #2563eb; margin-top: 0;">🔒 Painel do Administrador</h3>
             
             <label>Selecione a foto do produto:</label>
             <input type="file" id="input-arquivo" accept="image/*">
@@ -96,25 +118,23 @@
             <label>Link de afiliado:</label>
             <input type="text" id="input-link" placeholder="Cole o link da Shopee ou Mercado Livre">
 
-            <button class="btn-secundario" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
-            <button class="btn-sair" onclick="fazerLogout()">🚪 Sair da Conta (Logout)</button>
+            <button class="btn-principal" style="background: #10b981;" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
         </div>
 
+        <!-- Vitrine de Produtos (Pública) -->
         <div id="lista-produtos">
             <p style="text-align: center; color: #666;">Carregando ofertas...</p>
         </div>
 
         <div class="card stats">
             Cliques totais no app: <span id="contador-cliques">0</span>
-            <div id="div-sair-usuario" class="escondido" style="margin-top: 15px;">
-                <button class="btn-sair" onclick="fazerLogout()" style="width: auto; padding: 8px 15px; font-size: 13px;">🚪 Sair da Conta</button>
-            </div>
         </div>
     </div>
 
+    <!-- Script do Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -133,20 +153,7 @@
         const storage = getStorage(app);
         const auth = getAuth(app);
 
-        let modoCadastro = false;
-
-        window.alternarModoAuth = function() {
-            modoCadastro = !modoCadastro;
-            if (modoCadastro) {
-                document.getElementById('titulo-auth').innerText = "Criar Nova Conta 📝";
-                document.getElementById('btn-acao-auth').innerText = "Cadastrar";
-                document.getElementById('link-alternar').innerText = "Já tem uma conta? Faça login";
-            } else {
-                document.getElementById('titulo-auth').innerText = "Entrar ou Criar Conta 👤";
-                document.getElementById('btn-acao-auth').innerText = "Entrar / Cadastrar";
-                document.getElementById('link-alternar').innerText = "Não tem conta? Cadastre-se";
-            }
-        }
+        let usuarioAtualAdmin = false;
 
         window.realizarLoginOuCadastro = async function() {
             const email = document.getElementById('auth-email').value;
@@ -158,15 +165,11 @@
             }
 
             try {
-                if (modoCadastro) {
-                    await createUserWithEmailAndPassword(auth, email, senha);
-                    alert("Conta criada com sucesso! Você já está logado.");
-                } else {
-                    await signInWithEmailAndPassword(auth, email, senha);
-                    alert("Login realizado com sucesso!");
-                }
+                await signInWithEmailAndPassword(auth, email, senha);
+                alert("Login realizado com sucesso!");
             } catch (erro) {
-                if (!modoCadastro && erro.code === 'auth/invalid-credential') {
+                // Se a conta não existir, tenta criar automaticamente para facilitar
+                if (erro.code === 'auth/invalid-credential' || erro.code === 'auth/user-not-found') {
                     try {
                         await createUserWithEmailAndPassword(auth, email, senha);
                         alert("Conta criada e logada com sucesso!");
@@ -183,14 +186,14 @@
         window.esqueciSenha = async function() {
             const email = document.getElementById('auth-email').value;
             if (!email) {
-                alert("Por favor, digite o seu e-mail no campo de e-mail acima para recuperar a senha.");
+                alert("Digite o seu e-mail no campo de e-mail lá em cima primeiro.");
                 return;
             }
             try {
                 await sendPasswordResetEmail(auth, email);
                 alert("E-mail de recuperação enviado! Verifique sua caixa de entrada e spam.");
             } catch (erro) {
-                alert("Erro ao enviar e-mail: " + erro.message);
+                alert("Erro: " + erro.message);
             }
         }
 
@@ -204,24 +207,24 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Esconde a tela de login padrão
-                document.getElementById('card-autenticacao').classList.add('escondido');
-                
+                document.getElementById('bloco-auth-topo').classList.add('escondido');
+                document.getElementById('bloco-logado-topo').classList.remove('escondido');
+                document.getElementById('info-usuario-topo').innerText = user.email.split('@')[0];
+
                 if (user.email === EMAIL_ADMIN_OFICIAL) {
-                    // É o Administrador
+                    usuarioAtualAdmin = true;
                     document.getElementById('painel-admin').classList.remove('escondido');
-                    document.getElementById('info-admin').innerText = "Logado como Admin: " + user.email;
-                    document.getElementById('div-sair-usuario').classList.add('escondido');
                 } else {
-                    // É um usuário comum logado (mostra opção de sair)
+                    usuarioAtualAdmin = false;
                     document.getElementById('painel-admin').classList.add('escondido');
-                    document.getElementById('div-sair-usuario').classList.remove('escondido');
                 }
+                carregarProdutos(); // Recarrega para exibir/esconder o botão de apagar
             } else {
-                // Ninguém logado
-                document.getElementById('card-autenticacao').classList.remove('escondido');
+                usuarioAtualAdmin = false;
+                document.getElementById('bloco-auth-topo').classList.remove('escondido');
+                document.getElementById('bloco-logado-topo').classList.add('escondido');
                 document.getElementById('painel-admin').classList.add('escondido');
-                document.getElementById('div-sair-usuario').classList.add('escondido');
+                carregarProdutos();
             }
         });
 
@@ -237,19 +240,41 @@
                 let htmlProdutos = '';
                 querySnapshot.forEach((docSnap) => {
                     const prod = docSnap.data();
+                    
+                    // Se for admin, adiciona o botão de apagar anúncio
+                    let botaoApagarHTML = '';
+                    if (usuarioAtualAdmin) {
+                        botaoApagarHTML = `<button class="btn-apagar" onclick="apagarProduto('${docSnap.id}')">🗑️ Apagar Anúncio</button>`;
+                    }
+
                     htmlProdutos += `
                         <div class="card produto-card">
                             <img src="${prod.imagem}" alt="Produto">
                             <div class="produto-titulo">${prod.titulo}</div>
                             <div class="produto-preco">R$ ${prod.preco}</div>
                             <p>${prod.descricao || 'Garanta já o seu!'}</p>
-                            <button onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
+                            <button class="btn-principal" onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
+                            ${botaoApagarHTML}
                         </div>
                     `;
                 });
                 container.innerHTML = htmlProdutos;
             } catch (erro) {
                 console.error("Erro ao carregar produtos:", erro);
+            }
+        }
+
+        // Função para apagar o produto do banco de dados
+        window.apagarProduto = async function(idProduto) {
+            if (confirm("Tem certeza que deseja apagar este anúncio da vitrine?")) {
+                try {
+                    await deleteDoc(doc(db, "produtos", idProduto));
+                    alert("Produto apagado com sucesso!");
+                    carregarProdutos();
+                } catch (erro) {
+                    console.error("Erro ao apagar:", erro);
+                    alert("Erro ao tentar apagar o produto.");
+                }
             }
         }
 
