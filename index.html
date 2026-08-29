@@ -9,51 +9,59 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
         
-        /* Cabeçalho Fixo com Banner de Fundo de Alta Qualidade */
+        /* Cabeçalho Fixo no Topo */
         header { 
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
-            background: linear-gradient(rgba(37, 99, 235, 0.88), rgba(29, 78, 216, 0.92)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
+            background: #2563eb;
             color: white; 
-            padding: 12px 10px; 
+            padding: 10px 10px 8px 10px; 
             text-align: center; 
             z-index: 1000; 
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
             box-sizing: border-box;
         }
         
-        /* Nome da página maior e super destacado */
+        /* Nome da página destacado */
         header h2 { 
-            margin: 0 0 8px 0; 
-            font-size: 20px; 
+            margin: 0 0 5px 0; 
+            font-size: 19px; 
             font-weight: 900; 
             text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
             letter-spacing: 0.5px;
         }
+
+        /* Banner de Destaque Logo Abaixo do Nome */
+        .banner-topo {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
         
-        /* Área de Login/Cadastro Maior e Lado a Lado */
+        /* Área de Login/Cadastro no Topo */
         .header-auth {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             flex-wrap: wrap;
         }
         .header-auth input {
-            padding: 6px 9px;
-            font-size: 12px;
+            padding: 5px 8px;
+            font-size: 11px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            width: 115px;
+            width: 110px;
             background: #ffffff;
         }
         .header-auth button {
-            padding: 6px 11px;
-            font-size: 12px;
+            padding: 5px 10px;
+            font-size: 11px;
             background: #10b981;
             color: white;
             border: none;
@@ -68,7 +76,7 @@
         .link-topo { color: #f3f4f6; font-size: 11px; text-decoration: underline; cursor: pointer; margin-left: 4px; font-weight: bold; }
 
         /* Espaçamento adaptado para o topo fixo maior */
-        .container { padding: 105px 15px 20px 15px; max-width: 600px; margin: auto; }
+        .container { padding: 185px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
@@ -115,21 +123,63 @@
             font-size: 13px;
         }
 
+        /* Popup Flutuante de Instalação (PWA) */
+        #popup-instalar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+            border: 2px solid #10b981;
+        }
+        #popup-instalar button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
         .escondido { display: none; }
     </style>
 </head>
 <body>
 
+    <!-- Popup Flutuante de Instalação do App -->
+    <div id="popup-instalar">
+        <p style="margin: 0; font-size: 14px; font-weight: bold;">📱 Baixe nosso APP e receba ofertas todos os dias!</p>
+        <button id="btn-instalar-app">Instalar Aplicativo Agora</button>
+        <span style="display:block; margin-top:8px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupInstalar()">Agora não</span>
+    </div>
+
+    <!-- Popup Flutuante de Notificação (Ativado por 3 cliques na tela) -->
     <div id="popup-notif">
         <p style="margin: 0; font-size: 13px; font-weight: bold;">🔔 Deseja ativar os alertas para receber achadinhos no celular?</p>
         <button onclick="ativarNotificacoes(); fecharPopupNotif();">Sim, Ativar Agora!</button>
         <span style="display:block; margin-top:6px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Fechar</span>
     </div>
 
+    <!-- Cabeçalho Fixo com Banner -->
     <header>
         <h2>🔥 SUPER OFERTAS & ACHADINHOS</h2>
         
+        <!-- Banner de Destaque Logo Abaixo do Nome -->
+        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80" alt="Banner Ofertas" class="banner-topo">
+
+        <!-- Área de Login / Cadastro Compacta no Topo -->
         <div class="header-auth" id="bloco-auth-topo">
             <input type="email" id="auth-email" placeholder="E-mail">
             <input type="password" id="auth-senha" placeholder="Senha">
@@ -141,6 +191,7 @@
 
     <div class="container">
         
+        <!-- PAINEL DE ADMINISTRAÇÃO (Só aparece se o Admin logar) -->
         <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
             <h3 style="color: #2563eb; margin-top: 0;">🔒 Painel do Administrador</h3>
             <p id="info-admin" style="font-size: 12px; color: #666;"></p>
@@ -160,6 +211,7 @@
             <button class="btn-principal" style="background: #10b981;" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
         </div>
 
+        <!-- Vitrine de Produtos (Pública) -->
         <div id="lista-produtos">
             <p style="text-align: center; color: #666;">Carregando ofertas...</p>
         </div>
@@ -169,6 +221,7 @@
         </div>
     </div>
 
+    <!-- Script do Firebase e PWA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -191,14 +244,42 @@
         const auth = getAuth(app);
 
         let usuarioAtualAdmin = false;
+        let eventoInstalacaoPWA = null;
+
+        // Captura o evento nativo do navegador para instalar o aplicativo
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            eventoInstalacaoPWA = e;
+            // Mostra o popup de instalação personalizado
+            setTimeout(() => {
+                document.getElementById('popup-instalar').style.display = 'block';
+            }, 2000);
+        });
+
+        document.getElementById('btn-instalar-app').addEventListener('click', async () => {
+            if (eventoInstalacaoPWA) {
+                eventoInstalacaoPWA.prompt();
+                const escolha = await eventoInstalacaoPWA.userChoice;
+                if (escolha.outcome === 'accepted') {
+                    console.log('Usuário aceitou instalar o app');
+                }
+                eventoInstalacaoPWA = null;
+                document.getElementById('popup-instalar').style.display = 'none';
+            } else {
+                alert("Para instalar, abra o menu do seu navegador (três pontinhos no topo) e selecione 'Adicionar à tela inicial' ou 'Instalar aplicativo'.");
+            }
+        });
+
+        window.fecharPopupInstalar = function() {
+            document.getElementById('popup-instalar').style.display = 'none';
+        }
 
         // Gatilho secreto de 3 cliques na tela para exibir o pop-up de notificações
         let contadorCliquesTela = 0;
         let tempoUltimoClique = 0;
 
         document.addEventListener('click', function(e) {
-            // Ignora se o clique for dentro do pop-up ou do cabeçalho de login para não atrapalhar
-            if (e.target.closest('#popup-notif') || e.target.closest('header')) return;
+            if (e.target.closest('#popup-notif') || e.target.closest('#popup-instalar') || e.target.closest('header')) return;
 
             const agora = Date.now();
             if (agora - tempoUltimoClique > 1500) {
@@ -278,7 +359,6 @@
             const blocoAuth = document.getElementById('bloco-auth-topo');
             
             if (user) {
-                // Usuário logado: Muda o botão de entrar para botão de Sair vermelho
                 blocoAuth.innerHTML = `
                     <span style="font-size: 11px; max-width: 110px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold;">👤 ${user.email.split('@')[0]}</span>
                     <button class="btn-sair-topo" onclick="fazerLogout()">Sair</button>
@@ -294,7 +374,6 @@
                 }
                 carregarProdutos();
             } else {
-                // Ninguém logado: Restaura os inputs de login e cadastro maiores e organizados
                 usuarioAtualAdmin = false;
                 blocoAuth.innerHTML = `
                     <input type="email" id="auth-email" placeholder="E-mail">
