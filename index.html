@@ -54,6 +54,7 @@
             box-sizing: border-box;
         }
         
+        /* Título Maior e Destacado */
         header h2 { 
             margin: 0 0 6px 0; 
             font-size: 21px; 
@@ -150,7 +151,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Modal de Confirmação Profissional */
+        /* Modal de Confirmação Profissional (Substitui o confirm() nativo) */
         #modal-confirmacao {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -299,6 +300,7 @@
         let usuarioAtualAdmin = false;
         let eventoInstalacaoPWA = null;
 
+        // Função profissional para exibir avisos elegantes na tela
         window.mostrarAviso = function(mensagem, corBorda = "#10b981") {
             const toast = document.getElementById('toast-aviso');
             toast.innerText = mensagem;
@@ -306,9 +308,10 @@
             toast.classList.add('mostrar');
             setTimeout(() => {
                 toast.classList.remove('mostrar');
-            }, 5000);
+            }, 3500);
         }
 
+        // Função de Confirmação customizada (substitui o confirm do navegador)
         let funcaoCallbackConfirmar = null;
         window.abrirModalConfirmacao = function(texto, callback) {
             document.getElementById('modal-texto-pergunta').innerText = texto;
@@ -328,6 +331,7 @@
             fecharModalConfirmacao(true);
         });
 
+        // Cronômetro Regressivo de 15 minutos
         function iniciarCronometroGlobal() {
             let tempoFim = localStorage.getItem('tempoFimOferta');
             if (!tempoFim) {
@@ -435,8 +439,8 @@
             mostrarAviso("Você saiu da conta.");
         }
 
-        // ⚠️ COLOQUE SEU E-MAIL DE ADMIN AQUI EXATO:
-        const EMAIL_ADMIN_OFICIAL = "giliardmartins31@gmail.com";
+        // ⚠️ COLOQUE SEU E-MAIL DE ADMIN AQUI:
+        const EMAIL_ADMIN_OFICIAL = "seu-email-aqui@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
             const blocoAuth = document.getElementById('bloco-auth-topo');
@@ -471,20 +475,8 @@
             const container = document.getElementById('lista-produtos');
             try {
                 const querySnapshot = await getDocs(collection(db, "produtos"));
-                
-                // Se a vitrine estiver vazia, exibe um produto de exemplo padrão para nunca sumir a vitrine
                 if (querySnapshot.empty) {
-                    container.innerHTML = `
-                        <div class="card produto-card">
-                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="Exemplo">
-                            <div class="produto-titulo">🎁 Relógio Smartwatch Exemplo (Vitrine Ativa)</div>
-                            <div class="timer-oferta">⏱️ Expira em: 15:00</div>
-                            <div class="produto-preco">R$ 49,90</div>
-                            <p>Faça login com sua conta de admin para cadastrar seus próprios produtos!</p>
-                            <button class="btn-principal" onclick="clicarProduto('exemplo', 'https://shopee.com.br')">🔥 Ver Oferta na Loja</button>
-                        </div>
-                    `;
-                    iniciarCronometroGlobal();
+                    container.innerHTML = '<div class="card" style="text-align: center;"><p>Nenhuma oferta cadastrada ainda.</p></div>';
                     return;
                 }
 
@@ -509,7 +501,6 @@
                 iniciarCronometroGlobal();
             } catch (erro) {
                 console.error("Erro ao carregar produtos:", erro);
-                container.innerHTML = '<div class="card" style="text-align: center;"><p>Erro ao carregar banco de dados. Verifique a conexão.</p></div>';
             }
         }
 
@@ -552,12 +543,9 @@
             const storageRef = ref(storage, nomeArquivo);
 
             try {
-                mostrarAviso("Fazendo upload da foto do celular...", "#2563eb");
-                
+                mostrarAviso("Publicando produto na vitrine...", "#2563eb");
                 const snapshot = await uploadBytes(storageRef, arquivo);
                 const urlImagem = await getDownloadURL(snapshot.ref);
-
-                mostrarAviso("Salvando produto na vitrine...", "#2563eb");
 
                 const novoProduto = {
                     titulo: titulo,
@@ -569,27 +557,20 @@
                 };
 
                 await addDoc(collection(db, "produtos"), novoProduto);
-                
-                mostrarAviso("✨ Produto publicado com sucesso!");
+                mostrarAviso("Produto publicado com sucesso!");
                 fileInput.value = '';
                 document.getElementById('input-titulo').value = '';
                 document.getElementById('input-preco').value = '';
                 document.getElementById('input-link').value = '';
                 carregarProdutos();
-            } catch (erro) {
-                console.error("DETALHE DO ERRO:", erro);
-                // Se der erro de permissão do Storage do Firebase, ele vai mostrar na tela agora:
-                mostrarAviso("Erro no upload: " + erro.message, "#ef4444");
-            }
+            } catch (erro) { mostrarAviso("Erro ao enviar produto.", "#ef4444"); }
         }
 
         window.clicarProduto = async function(idProduto, linkAfiliado) {
             try {
-                if(idProduto !== 'exemplo') {
-                    const docRef = doc(db, "estatisticas", "cliquesOfertas");
-                    await updateDoc(docRef, { total: increment(1) });
-                    carregarCliques();
-                }
+                const docRef = doc(db, "estatisticas", "cliquesOfertas");
+                await updateDoc(docRef, { total: increment(1) });
+                carregarCliques();
             } catch (e) {}
             window.open(linkAfiliado, '_blank');
         }
