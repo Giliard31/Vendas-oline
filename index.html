@@ -54,7 +54,6 @@
             box-sizing: border-box;
         }
         
-        /* Título Maior e Destacado */
         header h2 { 
             margin: 0 0 6px 0; 
             font-size: 21px; 
@@ -437,7 +436,7 @@
         }
 
         // ⚠️ COLOQUE SEU E-MAIL DE ADMIN AQUI EXATO:
-        const EMAIL_ADMIN_OFICIAL ="giliardmartins31@gmail.com";
+        const EMAIL_ADMIN_OFICIAL = "giliardmartis31@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
             const blocoAuth = document.getElementById('bloco-auth-topo');
@@ -472,8 +471,20 @@
             const container = document.getElementById('lista-produtos');
             try {
                 const querySnapshot = await getDocs(collection(db, "produtos"));
+                
+                // Se a vitrine estiver vazia, exibe um produto de exemplo padrão para nunca sumir a vitrine
                 if (querySnapshot.empty) {
-                    container.innerHTML = '<div class="card" style="text-align: center;"><p>Nenhuma oferta cadastrada ainda.</p></div>';
+                    container.innerHTML = `
+                        <div class="card produto-card">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="Exemplo">
+                            <div class="produto-titulo">🎁 Relógio Smartwatch Exemplo (Vitrine Ativa)</div>
+                            <div class="timer-oferta">⏱️ Expira em: 15:00</div>
+                            <div class="produto-preco">R$ 49,90</div>
+                            <p>Faça login com sua conta de admin para cadastrar seus próprios produtos!</p>
+                            <button class="btn-principal" onclick="clicarProduto('exemplo', 'https://shopee.com.br')">🔥 Ver Oferta na Loja</button>
+                        </div>
+                    `;
+                    iniciarCronometroGlobal();
                     return;
                 }
 
@@ -498,6 +509,7 @@
                 iniciarCronometroGlobal();
             } catch (erro) {
                 console.error("Erro ao carregar produtos:", erro);
+                container.innerHTML = '<div class="card" style="text-align: center;"><p>Erro ao carregar banco de dados. Verifique a conexão.</p></div>';
             }
         }
 
@@ -524,7 +536,6 @@
         carregarProdutos();
         carregarCliques();
 
-        // Função de cadastro com tratamento e exibição exata de erros na tela
         window.cadastrarComFoto = async function() {
             const fileInput = document.getElementById('input-arquivo');
             const titulo = document.getElementById('input-titulo').value;
@@ -541,13 +552,12 @@
             const storageRef = ref(storage, nomeArquivo);
 
             try {
-                mostrarAviso("Fazendo upload da foto...", "#2563eb");
+                mostrarAviso("Fazendo upload da foto do celular...", "#2563eb");
                 
-                // Tenta enviar a imagem pro Firebase Storage
                 const snapshot = await uploadBytes(storageRef, arquivo);
                 const urlImagem = await getDownloadURL(snapshot.ref);
 
-                mostrarAviso("Salvando na vitrine...", "#2563eb");
+                mostrarAviso("Salvando produto na vitrine...", "#2563eb");
 
                 const novoProduto = {
                     titulo: titulo,
@@ -558,7 +568,6 @@
                     criadoEm: new Date().toISOString()
                 };
 
-                // Tenta salvar os dados no Firestore
                 await addDoc(collection(db, "produtos"), novoProduto);
                 
                 mostrarAviso("✨ Produto publicado com sucesso!");
@@ -569,16 +578,18 @@
                 carregarProdutos();
             } catch (erro) {
                 console.error("DETALHE DO ERRO:", erro);
-                // Exibe o erro exato na tarja vermelha para sabermos o motivo
-                mostrarAviso("Erro: " + erro.message, "#ef4444");
+                // Se der erro de permissão do Storage do Firebase, ele vai mostrar na tela agora:
+                mostrarAviso("Erro no upload: " + erro.message, "#ef4444");
             }
         }
 
         window.clicarProduto = async function(idProduto, linkAfiliado) {
             try {
-                const docRef = doc(db, "estatisticas", "cliquesOfertas");
-                await updateDoc(docRef, { total: increment(1) });
-                carregarCliques();
+                if(idProduto !== 'exemplo') {
+                    const docRef = doc(db, "estatisticas", "cliquesOfertas");
+                    await updateDoc(docRef, { total: increment(1) });
+                    carregarCliques();
+                }
             } catch (e) {}
             window.open(linkAfiliado, '_blank');
         }
