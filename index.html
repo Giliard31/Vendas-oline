@@ -8,21 +8,45 @@
     <meta name="theme-color" content="#2563eb">
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
-        header { background: #2563eb; color: white; padding: 20px; text-align: center; }
-        .container { padding: 20px; max-width: 600px; margin: auto; }
+        
+        /* Cabeçalho Fixo no Topo */
+        header { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            background: #2563eb; 
+            color: white; 
+            padding: 15px 10px; 
+            text-align: center; 
+            z-index: 1000; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
+        header h2 { margin: 0; font-size: 20px; }
+        header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
+
+        /* Espaçamento para o conteúdo não ficar debaixo do cabeçalho fixo */
+        .container { padding: 130px 15px 20px 15px; max-width: 600px; margin: auto; }
+
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
         .produto-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
-        input[type="text"], input[type="password"], input[type="email"], input[type="file"] { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; background: #fff; }
+        
+        input[type="text"], input[type="password"], input[type="email"], input[type="file"] { 
+            width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; background: #fff; 
+        }
         label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-bottom: 5px; }
+        
         button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 5px; }
         button:hover { background: #1d4ed8; }
         .btn-secundario { background: #10b981; }
         .btn-secundario:hover { background: #059669; }
-        .btn-admin { background: #4b5563; font-size: 13px; padding: 8px 12px; width: auto; margin-top: 15px; }
-        .btn-admin:hover { background: #374151; }
+        .btn-sair { background: #dc2626; margin-top: 10px; }
+        .btn-sair:hover { background: #b91c1c; }
+        
         .link-acao { color: #2563eb; cursor: pointer; text-align: center; display: block; margin-top: 10px; font-size: 14px; }
         .link-acao:hover { text-decoration: underline; }
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
@@ -38,10 +62,15 @@
 
     <div class="container">
         
-        <!-- Área de Login / Cadastro de Usuários e Admin -->
+        <div class="card" style="text-align: center; background: #eff6ff; border: 1px solid #bfdbfe;">
+            <h4 style="margin: 0 0 8px 0; color: #1e40af;">🔔 Alertas de Ofertas</h4>
+            <p style="font-size: 13px; color: #475569; margin: 0 0 10px 0;">Ative para ser avisado quando um novo achadinho for postado.</p>
+            <button class="btn-secundario" style="padding: 8px 15px; font-size: 14px; width: auto;" onclick="ativarNotificacoes()">Ativar Notificações</button>
+        </div>
+
         <div class="card" id="card-autenticacao">
             <h3 id="titulo-auth">Entrar ou Criar Conta 👤</h3>
-            <p id="subtitulo-auth" style="font-size: 14px; color: #666;">Cadastre-se para receber novidades ou faça login se for o Administrador.</p>
+            <p id="subtitulo-auth" style="font-size: 14px; color: #666;">Cadastre-se para acompanhar ou faça login se for o Administrador.</p>
             
             <input type="email" id="auth-email" placeholder="Seu e-mail">
             <input type="password" id="auth-senha" placeholder="Sua senha">
@@ -51,7 +80,6 @@
             <span class="link-acao" id="link-alternar" onclick="alternarModoAuth()">Não tem conta? Cadastre-se</span>
         </div>
 
-        <!-- PAINEL DE ADMINISTRAÇÃO (Só aparece se o Admin logar) -->
         <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
             <h3 style="color: #2563eb;">🔒 Painel do Administrador</h3>
             <p id="info-admin" style="font-size: 13px; color: #666;"></p>
@@ -69,23 +97,21 @@
             <input type="text" id="input-link" placeholder="Cole o link da Shopee ou Mercado Livre">
 
             <button class="btn-secundario" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
-            <button style="background: #dc2626; margin-top: 10px;" onclick="fazerLogout()">Sair da Conta (Logout)</button>
+            <button class="btn-sair" onclick="fazerLogout()">🚪 Sair da Conta (Logout)</button>
         </div>
 
-        <!-- Vitrine de Produtos (Pública) -->
         <div id="lista-produtos">
             <p style="text-align: center; color: #666;">Carregando ofertas...</p>
         </div>
 
         <div class="card stats">
             Cliques totais no app: <span id="contador-cliques">0</span>
-            <div style="text-align: center;">
-                <button class="btn-admin" onclick="ativarNotificacoes()">🔔 Ativar Notificações</button>
+            <div id="div-sair-usuario" class="escondido" style="margin-top: 15px;">
+                <button class="btn-sair" onclick="fazerLogout()" style="width: auto; padding: 8px 15px; font-size: 13px;">🚪 Sair da Conta</button>
             </div>
         </div>
     </div>
 
-    <!-- Script do Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -109,7 +135,6 @@
 
         let modoCadastro = false;
 
-        // Alterna entre tela de Login e tela de Cadastro para o usuário
         window.alternarModoAuth = function() {
             modoCadastro = !modoCadastro;
             if (modoCadastro) {
@@ -123,7 +148,6 @@
             }
         }
 
-        // Função de Login ou Cadastro unificada com segurança do Firebase
         window.realizarLoginOuCadastro = async function() {
             const email = document.getElementById('auth-email').value;
             const senha = document.getElementById('auth-senha').value;
@@ -142,7 +166,6 @@
                     alert("Login realizado com sucesso!");
                 }
             } catch (erro) {
-                // Se tentar logar e a conta não existir, tenta cadastrar automaticamente para facilitar
                 if (!modoCadastro && erro.code === 'auth/invalid-credential') {
                     try {
                         await createUserWithEmailAndPassword(auth, email, senha);
@@ -157,7 +180,6 @@
             }
         }
 
-        // Função de Recuperação de Senha
         window.esqueciSenha = async function() {
             const email = document.getElementById('auth-email').value;
             if (!email) {
@@ -166,9 +188,9 @@
             }
             try {
                 await sendPasswordResetEmail(auth, email);
-                alert("E-mail de recuperação enviado! Verifique sua caixa de entrada (e o spam).");
+                alert("E-mail de recuperação enviado! Verifique sua caixa de entrada e spam.");
             } catch (erro) {
-                alert("Erro ao enviar e-mail de recuperação: " + erro.message);
+                alert("Erro ao enviar e-mail: " + erro.message);
             }
         }
 
@@ -177,25 +199,29 @@
             alert("Você saiu da conta.");
         }
 
-        // Monitora se há alguém logado e se é o Admin (defina seu e-mail de admin abaixo)
-        const EMAIL_ADMIN_OFICIAL = "giliardmartins31@gmail.com"; // ⚠️ MUDE PARA O SEU E-MAIL DO FIREBASE
+        // ⚠️ LEMBRE-SE DE COLOCAR O SEU E-MAIL EXATO DE ADMIN AQUI:
+        const EMAIL_ADMIN_OFICIAL = "giliardmartins31@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Usuário está logado
+                // Esconde a tela de login padrão
                 document.getElementById('card-autenticacao').classList.add('escondido');
                 
-                // Verifica se é o Administrador
                 if (user.email === EMAIL_ADMIN_OFICIAL) {
+                    // É o Administrador
                     document.getElementById('painel-admin').classList.remove('escondido');
-                    document.getElementById('info-admin').innerText = "Logado como Administrador: " + user.email;
+                    document.getElementById('info-admin').innerText = "Logado como Admin: " + user.email;
+                    document.getElementById('div-sair-usuario').classList.add('escondido');
                 } else {
+                    // É um usuário comum logado (mostra opção de sair)
                     document.getElementById('painel-admin').classList.add('escondido');
+                    document.getElementById('div-sair-usuario').classList.remove('escondido');
                 }
             } else {
-                // Ninguém logado (Mostra tela de login limpa para novos usuários)
+                // Ninguém logado
                 document.getElementById('card-autenticacao').classList.remove('escondido');
                 document.getElementById('painel-admin').classList.add('escondido');
+                document.getElementById('div-sair-usuario').classList.add('escondido');
             }
         });
 
@@ -273,7 +299,7 @@
 
                 await addDoc(collection(db, "produtos"), novoProduto);
                 
-                alert("Produto publicado com sucesso para todos os usuários!");
+                alert("Produto publicado com sucesso!");
                 fileInput.value = '';
                 document.getElementById('input-titulo').value = '';
                 document.getElementById('input-preco').value = '';
