@@ -15,40 +15,73 @@
         .produto-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
-        input[type="text"] { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; }
+        input[type="text"], input[type="password"], input[type="email"], input[type="file"] { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; background: #fff; }
+        label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-bottom: 5px; }
         button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 5px; }
         button:hover { background: #1d4ed8; }
         .btn-secundario { background: #10b981; }
         .btn-secundario:hover { background: #059669; }
+        .btn-admin { background: #4b5563; font-size: 13px; padding: 8px 12px; width: auto; margin-top: 15px; }
+        .btn-admin:hover { background: #374151; }
+        .link-acao { color: #2563eb; cursor: pointer; text-align: center; display: block; margin-top: 10px; font-size: 14px; }
+        .link-acao:hover { text-decoration: underline; }
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
+        .escondido { display: none; }
     </style>
 </head>
 <body>
 
     <header>
         <h2>🔥 Super Ofertas & Achadinhos</h2>
-        <p>Sua vitrine de promoções em tempo real</p>
+        <p>As melhores promoções direto no seu celular</p>
     </header>
 
     <div class="container">
-        <!-- Painel de Cadastro Perfeito -->
-        <div class="card">
-            <h3>Cadastrar Achadinho 🚀</h3>
-            <p>Insira os dados reais do produto:</p>
-            <input type="text" id="input-titulo" placeholder="Nome do produto (ex: Óculos de Sol Esportivo)">
-            <input type="text" id="input-preco" placeholder="Preço (ex: 39,90)">
-            <input type="text" id="input-imagem" placeholder="Link da foto (clique com botão direito na foto do produto e copie o link da imagem)">
-            <input type="text" id="input-link" placeholder="Seu link de afiliado (Shopee/Mercado Livre)">
-            <button class="btn-secundario" onclick="cadastrarProduto()">✨ Publicar na Vitrine</button>
+        
+        <!-- Área de Login / Cadastro de Usuários e Admin -->
+        <div class="card" id="card-autenticacao">
+            <h3 id="titulo-auth">Entrar ou Criar Conta 👤</h3>
+            <p id="subtitulo-auth" style="font-size: 14px; color: #666;">Cadastre-se para receber novidades ou faça login se for o Administrador.</p>
+            
+            <input type="email" id="auth-email" placeholder="Seu e-mail">
+            <input type="password" id="auth-senha" placeholder="Sua senha">
+            
+            <button id="btn-acao-auth" onclick="realizarLoginOuCadastro()">Entrar / Cadastrar</button>
+            <span class="link-acao" id="link-esqueci" onclick="esqueciSenha()">Esqueci minha senha</span>
+            <span class="link-acao" id="link-alternar" onclick="alternarModoAuth()">Não tem conta? Cadastre-se</span>
         </div>
 
-        <!-- Vitrine de Produtos -->
+        <!-- PAINEL DE ADMINISTRAÇÃO (Só aparece se o Admin logar) -->
+        <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
+            <h3 style="color: #2563eb;">🔒 Painel do Administrador</h3>
+            <p id="info-admin" style="font-size: 13px; color: #666;"></p>
+            
+            <label>Selecione a foto do produto:</label>
+            <input type="file" id="input-arquivo" accept="image/*">
+
+            <label>Nome do produto:</label>
+            <input type="text" id="input-titulo" placeholder="Ex: Óculos de Sol Esportivo">
+
+            <label>Preço:</label>
+            <input type="text" id="input-preco" placeholder="Ex: 39,90">
+
+            <label>Link de afiliado:</label>
+            <input type="text" id="input-link" placeholder="Cole o link da Shopee ou Mercado Livre">
+
+            <button class="btn-secundario" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
+            <button style="background: #dc2626; margin-top: 10px;" onclick="fazerLogout()">Sair da Conta (Logout)</button>
+        </div>
+
+        <!-- Vitrine de Produtos (Pública) -->
         <div id="lista-produtos">
             <p style="text-align: center; color: #666;">Carregando ofertas...</p>
         </div>
 
         <div class="card stats">
             Cliques totais no app: <span id="contador-cliques">0</span>
+            <div style="text-align: center;">
+                <button class="btn-admin" onclick="ativarNotificacoes()">🔔 Ativar Notificações</button>
+            </div>
         </div>
     </div>
 
@@ -56,6 +89,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyC75L1-BhKHuwAf21o2ORV6UMHK0JVvcmQ",
@@ -69,6 +104,100 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
+        const auth = getAuth(app);
+
+        let modoCadastro = false;
+
+        // Alterna entre tela de Login e tela de Cadastro para o usuário
+        window.alternarModoAuth = function() {
+            modoCadastro = !modoCadastro;
+            if (modoCadastro) {
+                document.getElementById('titulo-auth').innerText = "Criar Nova Conta 📝";
+                document.getElementById('btn-acao-auth').innerText = "Cadastrar";
+                document.getElementById('link-alternar').innerText = "Já tem uma conta? Faça login";
+            } else {
+                document.getElementById('titulo-auth').innerText = "Entrar ou Criar Conta 👤";
+                document.getElementById('btn-acao-auth').innerText = "Entrar / Cadastrar";
+                document.getElementById('link-alternar').innerText = "Não tem conta? Cadastre-se";
+            }
+        }
+
+        // Função de Login ou Cadastro unificada com segurança do Firebase
+        window.realizarLoginOuCadastro = async function() {
+            const email = document.getElementById('auth-email').value;
+            const senha = document.getElementById('auth-senha').value;
+
+            if (!email || !senha) {
+                alert("Preencha o e-mail e a senha!");
+                return;
+            }
+
+            try {
+                if (modoCadastro) {
+                    await createUserWithEmailAndPassword(auth, email, senha);
+                    alert("Conta criada com sucesso! Você já está logado.");
+                } else {
+                    await signInWithEmailAndPassword(auth, email, senha);
+                    alert("Login realizado com sucesso!");
+                }
+            } catch (erro) {
+                // Se tentar logar e a conta não existir, tenta cadastrar automaticamente para facilitar
+                if (!modoCadastro && erro.code === 'auth/invalid-credential') {
+                    try {
+                        await createUserWithEmailAndPassword(auth, email, senha);
+                        alert("Conta criada e logada com sucesso!");
+                        return;
+                    } catch (errCad) {
+                        alert("Erro ao autenticar: " + errCad.message);
+                        return;
+                    }
+                }
+                alert("Erro: " + erro.message);
+            }
+        }
+
+        // Função de Recuperação de Senha
+        window.esqueciSenha = async function() {
+            const email = document.getElementById('auth-email').value;
+            if (!email) {
+                alert("Por favor, digite o seu e-mail no campo de e-mail acima para recuperar a senha.");
+                return;
+            }
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("E-mail de recuperação enviado! Verifique sua caixa de entrada (e o spam).");
+            } catch (erro) {
+                alert("Erro ao enviar e-mail de recuperação: " + erro.message);
+            }
+        }
+
+        window.fazerLogout = async function() {
+            await signOut(auth);
+            alert("Você saiu da conta.");
+        }
+
+        // Monitora se há alguém logado e se é o Admin (defina seu e-mail de admin abaixo)
+        const EMAIL_ADMIN_OFICIAL = "seu-email-aqui@gmail.com"; // ⚠️ MUDE PARA O SEU E-MAIL DO FIREBASE
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuário está logado
+                document.getElementById('card-autenticacao').classList.add('escondido');
+                
+                // Verifica se é o Administrador
+                if (user.email === EMAIL_ADMIN_OFICIAL) {
+                    document.getElementById('painel-admin').classList.remove('escondido');
+                    document.getElementById('info-admin').innerText = "Logado como Administrador: " + user.email;
+                } else {
+                    document.getElementById('painel-admin').classList.add('escondido');
+                }
+            } else {
+                // Ninguém logado (Mostra tela de login limpa para novos usuários)
+                document.getElementById('card-autenticacao').classList.remove('escondido');
+                document.getElementById('painel-admin').classList.add('escondido');
+            }
+        });
 
         async function carregarProdutos() {
             const container = document.getElementById('lista-produtos');
@@ -87,7 +216,7 @@
                             <img src="${prod.imagem}" alt="Produto">
                             <div class="produto-titulo">${prod.titulo}</div>
                             <div class="produto-preco">R$ ${prod.preco}</div>
-                            <p>${prod.descricao || 'Garanta já o seu com frete rápido!'}</p>
+                            <p>${prod.descricao || 'Garanta já o seu!'}</p>
                             <button onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
                         </div>
                     `;
@@ -113,38 +242,46 @@
         carregarProdutos();
         carregarCliques();
 
-        window.cadastrarProduto = async function() {
+        window.cadastrarComFoto = async function() {
+            const fileInput = document.getElementById('input-arquivo');
             const titulo = document.getElementById('input-titulo').value;
             const preco = document.getElementById('input-preco').value;
-            const imagem = document.getElementById('input-imagem').value;
             const link = document.getElementById('input-link').value;
 
-            if (!titulo || !preco || !imagem || !link) {
-                alert("Por favor, preencha todos os campos para a oferta ficar perfeita!");
+            if (fileInput.files.length === 0 || !titulo || !preco || !link) {
+                alert("Por favor, selecione uma foto e preencha todos os campos!");
                 return;
             }
 
+            const arquivo = fileInput.files[0];
+            const nomeArquivo = 'produtos/' + Date.now() + '_' + arquivo.name;
+            const storageRef = ref(storage, nomeArquivo);
+
             try {
+                alert("Enviando produto para a vitrine...");
+                const snapshot = await uploadBytes(storageRef, arquivo);
+                const urlImagem = await getDownloadURL(snapshot.ref);
+
                 const novoProduto = {
                     titulo: titulo,
                     preco: preco,
-                    descricao: "Achadinho selecionado especialmente para você.",
-                    imagem: imagem,
+                    descricao: "Oferta imperdível selecionada para você.",
+                    imagem: urlImagem,
                     linkAfiliado: link,
                     criadoEm: new Date().toISOString()
                 };
 
                 await addDoc(collection(db, "produtos"), novoProduto);
                 
-                alert("Oferta publicada com sucesso na sua vitrine!");
+                alert("Produto publicado com sucesso para todos os usuários!");
+                fileInput.value = '';
                 document.getElementById('input-titulo').value = '';
                 document.getElementById('input-preco').value = '';
-                document.getElementById('input-imagem').value = '';
                 document.getElementById('input-link').value = '';
                 carregarProdutos();
             } catch (erro) {
                 console.error("Erro ao cadastrar:", erro);
-                alert("Erro ao salvar produto.");
+                alert("Erro ao enviar produto.");
             }
         }
 
@@ -157,6 +294,16 @@
             } catch (erro) {
                 window.open(linkAfiliado, '_blank');
             }
+        }
+
+        window.ativarNotificacoes = function() {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    alert("Notificações ativadas com sucesso!");
+                } else {
+                    alert("Permissão negada.");
+                }
+            });
         }
     </script>
 </body>
