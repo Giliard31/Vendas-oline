@@ -9,45 +9,55 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
         
-        /* Cabeçalho Fixo Compacto no Topo */
+        /* Cabeçalho Fixo com Banner de Fundo de Alta Qualidade */
         header { 
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
-            background: #2563eb; 
+            background: linear-gradient(rgba(37, 99, 235, 0.88), rgba(29, 78, 216, 0.92)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
             color: white; 
-            padding: 10px; 
+            padding: 12px 10px; 
             text-align: center; 
             z-index: 1000; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
             box-sizing: border-box;
         }
-        header h2 { margin: 0; font-size: 15px; }
         
-        /* Barra de Login / Topo Compacta */
+        /* Nome da página maior e super destacado */
+        header h2 { 
+            margin: 0 0 8px 0; 
+            font-size: 20px; 
+            font-weight: 900; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            letter-spacing: 0.5px;
+        }
+        
+        /* Área de Login/Cadastro Maior e Lado a Lado */
         .header-auth {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 4px;
-            margin-top: 5px;
+            gap: 6px;
             flex-wrap: wrap;
         }
         .header-auth input {
-            padding: 4px 6px;
-            font-size: 10px;
-            border: none;
-            border-radius: 4px;
-            width: 95px;
+            padding: 6px 9px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 115px;
+            background: #ffffff;
         }
         .header-auth button {
-            padding: 4px 8px;
-            font-size: 10px;
+            padding: 6px 11px;
+            font-size: 12px;
             background: #10b981;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
@@ -55,10 +65,10 @@
         .btn-sair-topo { background: #dc2626 !important; }
         .btn-sair-topo:hover { background: #b91c1c !important; }
         
-        .link-topo { color: #f3f4f6; font-size: 10px; text-decoration: underline; cursor: pointer; margin-left: 3px; }
+        .link-topo { color: #f3f4f6; font-size: 11px; text-decoration: underline; cursor: pointer; margin-left: 4px; font-weight: bold; }
 
-        /* Espaçamento adaptado para o topo fixo */
-        .container { padding: 90px 15px 20px 15px; max-width: 600px; margin: auto; }
+        /* Espaçamento adaptado para o topo fixo maior */
+        .container { padding: 105px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
@@ -76,7 +86,7 @@
         .btn-apagar { background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; margin-top: 10px; }
         .btn-apagar:hover { background: #b91c1c; }
         
-        /* Popup flutuante de Notificação */
+        /* Popup Flutuante de Notificação (Ativado por 3 cliques) */
         #popup-notif {
             position: fixed;
             bottom: 20px;
@@ -84,24 +94,25 @@
             transform: translateX(-50%);
             background: #1e293b;
             color: white;
-            padding: 12px 20px;
+            padding: 14px 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             z-index: 2000;
             display: none;
             max-width: 90%;
             text-align: center;
+            border: 2px solid #38bdf8;
         }
         #popup-notif button {
             background: #10b981;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
             margin-top: 8px;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
@@ -110,31 +121,26 @@
 </head>
 <body>
 
-    <!-- Popup Flutuante Inicial de Alertas -->
     <div id="popup-notif">
-        <p style="margin: 0; font-size: 13px;">🔔 Deseja receber alertas quando novos achadinhos forem postados?</p>
-        <button onclick="ativarNotificacoes(); fecharPopupNotif();">Ativar Alertas</button>
-        <span style="display:block; margin-top:6px; font-size:10px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Agora não</span>
+        <p style="margin: 0; font-size: 13px; font-weight: bold;">🔔 Deseja ativar os alertas para receber achadinhos no celular?</p>
+        <button onclick="ativarNotificacoes(); fecharPopupNotif();">Sim, Ativar Agora!</button>
+        <span style="display:block; margin-top:6px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Fechar</span>
     </div>
 
-    <!-- Cabeçalho Fixo Compacto com Login e Alertas -->
     <header>
-        <h2>🔥 Super Ofertas & Achadinhos</h2>
+        <h2>🔥 SUPER OFERTAS & ACHADINHOS</h2>
         
-        <!-- Área de Login / Cadastro Compacta no Topo -->
         <div class="header-auth" id="bloco-auth-topo">
             <input type="email" id="auth-email" placeholder="E-mail">
             <input type="password" id="auth-senha" placeholder="Senha">
             <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
             <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
             <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
-            <span class="link-topo" id="icone-sino-topo" onclick="mostrarPopupNotif()" style="font-size: 13px;" title="Ativar Alertas">🔔</span>
         </div>
     </header>
 
     <div class="container">
         
-        <!-- PAINEL DE ADMINISTRAÇÃO (Só aparece se o Admin logar) -->
         <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
             <h3 style="color: #2563eb; margin-top: 0;">🔒 Painel do Administrador</h3>
             <p id="info-admin" style="font-size: 12px; color: #666;"></p>
@@ -154,7 +160,6 @@
             <button class="btn-principal" style="background: #10b981;" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
         </div>
 
-        <!-- Vitrine de Produtos (Pública) -->
         <div id="lista-produtos">
             <p style="text-align: center; color: #666;">Carregando ofertas...</p>
         </div>
@@ -164,7 +169,6 @@
         </div>
     </div>
 
-    <!-- Script do Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -188,21 +192,30 @@
 
         let usuarioAtualAdmin = false;
 
-        // Exibir popup de notificação logo ao entrar no site (caso não tenha ativado ainda)
-        window.onload = function() {
-            if (Notification.permission !== 'granted') {
-                setTimeout(() => {
-                    document.getElementById('popup-notif').style.display = 'block';
-                }, 1500);
+        // Gatilho secreto de 3 cliques na tela para exibir o pop-up de notificações
+        let contadorCliquesTela = 0;
+        let tempoUltimoClique = 0;
+
+        document.addEventListener('click', function(e) {
+            // Ignora se o clique for dentro do pop-up ou do cabeçalho de login para não atrapalhar
+            if (e.target.closest('#popup-notif') || e.target.closest('header')) return;
+
+            const agora = Date.now();
+            if (agora - tempoUltimoClique > 1500) {
+                contadorCliquesTela = 1;
+            } else {
+                contadorCliquesTela++;
             }
-        };
+            tempoUltimoClique = agora;
+
+            if (contadorCliquesTela >= 3) {
+                document.getElementById('popup-notif').style.display = 'block';
+                contadorCliquesTela = 0;
+            }
+        });
 
         window.fecharPopupNotif = function() {
             document.getElementById('popup-notif').style.display = 'none';
-        }
-
-        window.mostrarPopupNotif = function() {
-            document.getElementById('popup-notif').style.display = 'block';
         }
 
         window.realizarLogin = async function() {
@@ -265,11 +278,10 @@
             const blocoAuth = document.getElementById('bloco-auth-topo');
             
             if (user) {
-                // Usuário logado: Transforma o botão de entrar em botão de Sair vermelho
+                // Usuário logado: Muda o botão de entrar para botão de Sair vermelho
                 blocoAuth.innerHTML = `
-                    <span style="font-size: 10px; max-width: 90px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;">👤 ${user.email.split('@')[0]}</span>
+                    <span style="font-size: 11px; max-width: 110px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold;">👤 ${user.email.split('@')[0]}</span>
                     <button class="btn-sair-topo" onclick="fazerLogout()">Sair</button>
-                    <span class="link-topo" id="icone-sino-topo" onclick="mostrarPopupNotif()" style="font-size: 13px;" title="Ativar Alertas">🔔</span>
                 `;
 
                 if (user.email === EMAIL_ADMIN_OFICIAL) {
@@ -282,7 +294,7 @@
                 }
                 carregarProdutos();
             } else {
-                // Ninguém logado: Restaura os inputs de login e cadastro
+                // Ninguém logado: Restaura os inputs de login e cadastro maiores e organizados
                 usuarioAtualAdmin = false;
                 blocoAuth.innerHTML = `
                     <input type="email" id="auth-email" placeholder="E-mail">
@@ -290,7 +302,6 @@
                     <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
                     <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
                     <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
-                    <span class="link-topo" id="icone-sino-topo" onclick="mostrarPopupNotif()" style="font-size: 13px;" title="Ativar Alertas">🔔</span>
                 `;
                 document.getElementById('painel-admin').classList.add('escondido');
                 carregarProdutos();
