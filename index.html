@@ -23,27 +23,27 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             box-sizing: border-box;
         }
-        header h2 { margin: 0; font-size: 16px; }
+        header h2 { margin: 0; font-size: 15px; }
         
-        /* Barra de Login Compacta no Topo */
+        /* Barra de Login / Topo Compacta */
         .header-auth {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 5px;
-            margin-top: 6px;
+            gap: 4px;
+            margin-top: 5px;
             flex-wrap: wrap;
         }
         .header-auth input {
-            padding: 5px 8px;
-            font-size: 11px;
+            padding: 4px 6px;
+            font-size: 10px;
             border: none;
             border-radius: 4px;
-            width: 110px;
+            width: 95px;
         }
         .header-auth button {
-            padding: 5px 10px;
-            font-size: 11px;
+            padding: 4px 8px;
+            font-size: 10px;
             background: #10b981;
             color: white;
             border: none;
@@ -52,10 +52,13 @@
             font-weight: bold;
         }
         .header-auth button:hover { background: #059669; }
-        .link-topo { color: #f3f4f6; font-size: 10px; text-decoration: underline; cursor: pointer; margin-left: 5px; }
+        .btn-sair-topo { background: #dc2626 !important; }
+        .btn-sair-topo:hover { background: #b91c1c !important; }
+        
+        .link-topo { color: #f3f4f6; font-size: 10px; text-decoration: underline; cursor: pointer; margin-left: 3px; }
 
-        /* Espaçamento adaptado para o topo fixo compacto */
-        .container { padding: 85px 15px 20px 15px; max-width: 600px; margin: auto; }
+        /* Espaçamento adaptado para o topo fixo */
+        .container { padding: 90px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
@@ -73,30 +76,59 @@
         .btn-apagar { background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; margin-top: 10px; }
         .btn-apagar:hover { background: #b91c1c; }
         
+        /* Popup flutuante de Notificação */
+        #popup-notif {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 2000;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+        }
+        #popup-notif button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
         .escondido { display: none; }
     </style>
 </head>
 <body>
 
+    <!-- Popup Flutuante Inicial de Alertas -->
+    <div id="popup-notif">
+        <p style="margin: 0; font-size: 13px;">🔔 Deseja receber alertas quando novos achadinhos forem postados?</p>
+        <button onclick="ativarNotificacoes(); fecharPopupNotif();">Ativar Alertas</button>
+        <span style="display:block; margin-top:6px; font-size:10px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Agora não</span>
+    </div>
+
     <!-- Cabeçalho Fixo Compacto com Login e Alertas -->
     <header>
         <h2>🔥 Super Ofertas & Achadinhos</h2>
         
-        <!-- Área de Login Compacta no Topo -->
+        <!-- Área de Login / Cadastro Compacta no Topo -->
         <div class="header-auth" id="bloco-auth-topo">
             <input type="email" id="auth-email" placeholder="E-mail">
             <input type="password" id="auth-senha" placeholder="Senha">
-            <button id="btn-acao-auth" onclick="realizarLoginOuCadastro()">Entrar</button>
+            <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
+            <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
             <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
-            <span class="link-topo" onclick="ativarNotificacoes()">🔔 Alertas</span>
-        </div>
-
-        <!-- Cabeçalho quando logado -->
-        <div class="header-auth escondido" id="bloco-logado-topo">
-            <span id="info-usuario-topo" style="font-size: 11px; margin-right: 5px;"></span>
-            <button style="background: #dc2626;" onclick="fazerLogout()">Sair</button>
-            <button style="background: #0284c7;" onclick="ativarNotificacoes()">🔔 Alertas</button>
+            <span class="link-topo" id="icone-sino-topo" onclick="mostrarPopupNotif()" style="font-size: 13px;" title="Ativar Alertas">🔔</span>
         </div>
     </header>
 
@@ -105,6 +137,7 @@
         <!-- PAINEL DE ADMINISTRAÇÃO (Só aparece se o Admin logar) -->
         <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
             <h3 style="color: #2563eb; margin-top: 0;">🔒 Painel do Administrador</h3>
+            <p id="info-admin" style="font-size: 12px; color: #666;"></p>
             
             <label>Selecione a foto do produto:</label>
             <input type="file" id="input-arquivo" accept="image/*">
@@ -155,12 +188,29 @@
 
         let usuarioAtualAdmin = false;
 
-        window.realizarLoginOuCadastro = async function() {
+        // Exibir popup de notificação logo ao entrar no site (caso não tenha ativado ainda)
+        window.onload = function() {
+            if (Notification.permission !== 'granted') {
+                setTimeout(() => {
+                    document.getElementById('popup-notif').style.display = 'block';
+                }, 1500);
+            }
+        };
+
+        window.fecharPopupNotif = function() {
+            document.getElementById('popup-notif').style.display = 'none';
+        }
+
+        window.mostrarPopupNotif = function() {
+            document.getElementById('popup-notif').style.display = 'block';
+        }
+
+        window.realizarLogin = async function() {
             const email = document.getElementById('auth-email').value;
             const senha = document.getElementById('auth-senha').value;
 
             if (!email || !senha) {
-                alert("Preencha o e-mail e a senha!");
+                alert("Digite o e-mail e a senha para entrar!");
                 return;
             }
 
@@ -168,18 +218,24 @@
                 await signInWithEmailAndPassword(auth, email, senha);
                 alert("Login realizado com sucesso!");
             } catch (erro) {
-                // Se a conta não existir, tenta criar automaticamente para facilitar
-                if (erro.code === 'auth/invalid-credential' || erro.code === 'auth/user-not-found') {
-                    try {
-                        await createUserWithEmailAndPassword(auth, email, senha);
-                        alert("Conta criada e logada com sucesso!");
-                        return;
-                    } catch (errCad) {
-                        alert("Erro ao autenticar: " + errCad.message);
-                        return;
-                    }
-                }
-                alert("Erro: " + erro.message);
+                alert("Erro ao entrar: " + erro.message);
+            }
+        }
+
+        window.criarConta = async function() {
+            const email = document.getElementById('auth-email').value;
+            const senha = document.getElementById('auth-senha').value;
+
+            if (!email || !senha) {
+                alert("Digite o e-mail e uma senha nos campos acima para criar sua conta!");
+                return;
+            }
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, senha);
+                alert("Conta criada e logada com sucesso!");
+            } catch (erro) {
+                alert("Erro ao criar conta: " + erro.message);
             }
         }
 
@@ -206,23 +262,36 @@
         const EMAIL_ADMIN_OFICIAL = "giliardmartins31@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
+            const blocoAuth = document.getElementById('bloco-auth-topo');
+            
             if (user) {
-                document.getElementById('bloco-auth-topo').classList.add('escondido');
-                document.getElementById('bloco-logado-topo').classList.remove('escondido');
-                document.getElementById('info-usuario-topo').innerText = user.email.split('@')[0];
+                // Usuário logado: Transforma o botão de entrar em botão de Sair vermelho
+                blocoAuth.innerHTML = `
+                    <span style="font-size: 10px; max-width: 90px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;">👤 ${user.email.split('@')[0]}</span>
+                    <button class="btn-sair-topo" onclick="fazerLogout()">Sair</button>
+                    <span class="link-topo" id="icone-sino-topo" onclick="mostrarPopupNotif()" style="font-size: 13px;" title="Ativar Alertas">🔔</span>
+                `;
 
                 if (user.email === EMAIL_ADMIN_OFICIAL) {
                     usuarioAtualAdmin = true;
                     document.getElementById('painel-admin').classList.remove('escondido');
+                    document.getElementById('info-admin').innerText = "Logado como Admin: " + user.email;
                 } else {
                     usuarioAtualAdmin = false;
                     document.getElementById('painel-admin').classList.add('escondido');
                 }
-                carregarProdutos(); // Recarrega para exibir/esconder o botão de apagar
+                carregarProdutos();
             } else {
+                // Ninguém logado: Restaura os inputs de login e cadastro
                 usuarioAtualAdmin = false;
-                document.getElementById('bloco-auth-topo').classList.remove('escondido');
-                document.getElementById('bloco-logado-topo').classList.add('escondido');
+                blocoAuth.innerHTML = `
+                    <input type="email" id="auth-email" placeholder="E-mail">
+                    <input type="password" id="auth-senha" placeholder="Senha">
+                    <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
+                    <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
+                    <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
+                    <span class="link-topo" id="icone-sino-topo" onclick="mostrarPopupNotif()" style="font-size: 13px;" title="Ativar Alertas">🔔</span>
+                `;
                 document.getElementById('painel-admin').classList.add('escondido');
                 carregarProdutos();
             }
@@ -241,7 +310,6 @@
                 querySnapshot.forEach((docSnap) => {
                     const prod = docSnap.data();
                     
-                    // Se for admin, adiciona o botão de apagar anúncio
                     let botaoApagarHTML = '';
                     if (usuarioAtualAdmin) {
                         botaoApagarHTML = `<button class="btn-apagar" onclick="apagarProduto('${docSnap.id}')">🗑️ Apagar Anúncio</button>`;
@@ -264,7 +332,6 @@
             }
         }
 
-        // Função para apagar o produto do banco de dados
         window.apagarProduto = async function(idProduto) {
             if (confirm("Tem certeza que deseja apagar este anúncio da vitrine?")) {
                 try {
@@ -352,7 +419,7 @@
                 if (permission === 'granted') {
                     alert("Notificações ativadas com sucesso!");
                 } else {
-                    alert("Permissão negada.");
+                    alert("Permissão de notificação negada.");
                 }
             });
         }
