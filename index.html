@@ -9,66 +9,25 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #333; }
         
-        /* Cabeçalho Fixo com Banner de Fundo de Alta Qualidade */
+        /* Cabeçalho Fixo no Topo */
         header { 
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
-            background: linear-gradient(rgba(37, 99, 235, 0.88), rgba(29, 78, 216, 0.92)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
+            background: #2563eb; 
             color: white; 
-            padding: 12px 10px; 
+            padding: 15px 10px; 
             text-align: center; 
             z-index: 1000; 
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             box-sizing: border-box;
         }
-        
-        /* Nome da página maior e super destacado */
-        header h2 { 
-            margin: 0 0 8px 0; 
-            font-size: 20px; 
-            font-weight: 900; 
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
-            letter-spacing: 0.5px;
-        }
-        
-        /* Área de Login/Cadastro Maior e Lado a Lado */
-        .header-auth {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .header-auth input {
-            padding: 6px 9px;
-            font-size: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 115px;
-            background: #ffffff;
-        }
-        .header-auth button {
-            padding: 6px 11px;
-            font-size: 12px;
-            background: #10b981;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .header-auth button:hover { background: #059669; }
-        .btn-sair-topo { background: #dc2626 !important; }
-        .btn-sair-topo:hover { background: #b91c1c !important; }
-        
-        .link-topo { color: #f3f4f6; font-size: 11px; text-decoration: underline; cursor: pointer; margin-left: 4px; font-weight: bold; }
+        header h2 { margin: 0; font-size: 20px; }
+        header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
 
-        /* Espaçamento adaptado para o topo fixo maior */
-        .container { padding: 105px 15px 20px 15px; max-width: 600px; margin: auto; }
+        /* Espaçamento para o conteúdo não ficar debaixo do cabeçalho fixo */
+        .container { padding: 130px 15px 20px 15px; max-width: 600px; margin: auto; }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .produto-card { text-align: left; }
@@ -76,74 +35,54 @@
         .produto-titulo { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .produto-preco { color: #16a34a; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
         
-        input[type="text"], input[type="file"] { 
+        input[type="text"], input[type="password"], input[type="email"], input[type="file"] { 
             width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; font-size: 14px; background: #fff; 
         }
         label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-bottom: 5px; }
         
-        button.btn-principal { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 5px; }
-        button.btn-principal:hover { background: #1d4ed8; }
-        .btn-apagar { background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; margin-top: 10px; }
-        .btn-apagar:hover { background: #b91c1c; }
+        button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 5px; }
+        button:hover { background: #1d4ed8; }
+        .btn-secundario { background: #10b981; }
+        .btn-secundario:hover { background: #059669; }
+        .btn-sair { background: #dc2626; margin-top: 10px; }
+        .btn-sair:hover { background: #b91c1c; }
         
-        /* Popup Flutuante de Notificação (Ativado por 3 cliques) */
-        #popup-notif {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 14px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            z-index: 2000;
-            display: none;
-            max-width: 90%;
-            text-align: center;
-            border: 2px solid #38bdf8;
-        }
-        #popup-notif button {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 8px;
-            font-size: 13px;
-        }
-
+        .link-acao { color: #2563eb; cursor: pointer; text-align: center; display: block; margin-top: 10px; font-size: 14px; }
+        .link-acao:hover { text-decoration: underline; }
         .stats { font-size: 14px; color: #666; margin-top: 10px; text-align: center; }
         .escondido { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="popup-notif">
-        <p style="margin: 0; font-size: 13px; font-weight: bold;">🔔 Deseja ativar os alertas para receber achadinhos no celular?</p>
-        <button onclick="ativarNotificacoes(); fecharPopupNotif();">Sim, Ativar Agora!</button>
-        <span style="display:block; margin-top:6px; font-size:11px; text-decoration:underline; cursor:pointer; opacity:0.8;" onclick="fecharPopupNotif()">Fechar</span>
-    </div>
-
     <header>
-        <h2>🔥 SUPER OFERTAS & ACHADINHOS</h2>
-        
-        <div class="header-auth" id="bloco-auth-topo">
-            <input type="email" id="auth-email" placeholder="E-mail">
-            <input type="password" id="auth-senha" placeholder="Senha">
-            <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
-            <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
-            <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
-        </div>
+        <h2>🔥 Super Ofertas & Achadinhos</h2>
+        <p>As melhores promoções direto no seu celular</p>
     </header>
 
     <div class="container">
         
+        <div class="card" style="text-align: center; background: #eff6ff; border: 1px solid #bfdbfe;">
+            <h4 style="margin: 0 0 8px 0; color: #1e40af;">🔔 Alertas de Ofertas</h4>
+            <p style="font-size: 13px; color: #475569; margin: 0 0 10px 0;">Ative para ser avisado quando um novo achadinho for postado.</p>
+            <button class="btn-secundario" style="padding: 8px 15px; font-size: 14px; width: auto;" onclick="ativarNotificacoes()">Ativar Notificações</button>
+        </div>
+
+        <div class="card" id="card-autenticacao">
+            <h3 id="titulo-auth">Entrar ou Criar Conta 👤</h3>
+            <p id="subtitulo-auth" style="font-size: 14px; color: #666;">Cadastre-se para acompanhar ou faça login se for o Administrador.</p>
+            
+            <input type="email" id="auth-email" placeholder="Seu e-mail">
+            <input type="password" id="auth-senha" placeholder="Sua senha">
+            
+            <button id="btn-acao-auth" onclick="realizarLoginOuCadastro()">Entrar / Cadastrar</button>
+            <span class="link-acao" id="link-esqueci" onclick="esqueciSenha()">Esqueci minha senha</span>
+            <span class="link-acao" id="link-alternar" onclick="alternarModoAuth()">Não tem conta? Cadastre-se</span>
+        </div>
+
         <div id="painel-admin" class="card escondido" style="border: 2px dashed #2563eb;">
-            <h3 style="color: #2563eb; margin-top: 0;">🔒 Painel do Administrador</h3>
-            <p id="info-admin" style="font-size: 12px; color: #666;"></p>
+            <h3 style="color: #2563eb;">🔒 Painel do Administrador</h3>
+            <p id="info-admin" style="font-size: 13px; color: #666;"></p>
             
             <label>Selecione a foto do produto:</label>
             <input type="file" id="input-arquivo" accept="image/*">
@@ -157,7 +96,8 @@
             <label>Link de afiliado:</label>
             <input type="text" id="input-link" placeholder="Cole o link da Shopee ou Mercado Livre">
 
-            <button class="btn-principal" style="background: #10b981;" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
+            <button class="btn-secundario" onclick="cadastrarComFoto()">✨ Publicar na Vitrine</button>
+            <button class="btn-sair" onclick="fazerLogout()">🚪 Sair da Conta (Logout)</button>
         </div>
 
         <div id="lista-produtos">
@@ -166,12 +106,15 @@
 
         <div class="card stats">
             Cliques totais no app: <span id="contador-cliques">0</span>
+            <div id="div-sair-usuario" class="escondido" style="margin-top: 15px;">
+                <button class="btn-sair" onclick="fazerLogout()" style="width: auto; padding: 8px 15px; font-size: 13px;">🚪 Sair da Conta</button>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -190,79 +133,64 @@
         const storage = getStorage(app);
         const auth = getAuth(app);
 
-        let usuarioAtualAdmin = false;
+        let modoCadastro = false;
 
-        // Gatilho secreto de 3 cliques na tela para exibir o pop-up de notificações
-        let contadorCliquesTela = 0;
-        let tempoUltimoClique = 0;
-
-        document.addEventListener('click', function(e) {
-            // Ignora se o clique for dentro do pop-up ou do cabeçalho de login para não atrapalhar
-            if (e.target.closest('#popup-notif') || e.target.closest('header')) return;
-
-            const agora = Date.now();
-            if (agora - tempoUltimoClique > 1500) {
-                contadorCliquesTela = 1;
+        window.alternarModoAuth = function() {
+            modoCadastro = !modoCadastro;
+            if (modoCadastro) {
+                document.getElementById('titulo-auth').innerText = "Criar Nova Conta 📝";
+                document.getElementById('btn-acao-auth').innerText = "Cadastrar";
+                document.getElementById('link-alternar').innerText = "Já tem uma conta? Faça login";
             } else {
-                contadorCliquesTela++;
+                document.getElementById('titulo-auth').innerText = "Entrar ou Criar Conta 👤";
+                document.getElementById('btn-acao-auth').innerText = "Entrar / Cadastrar";
+                document.getElementById('link-alternar').innerText = "Não tem conta? Cadastre-se";
             }
-            tempoUltimoClique = agora;
-
-            if (contadorCliquesTela >= 3) {
-                document.getElementById('popup-notif').style.display = 'block';
-                contadorCliquesTela = 0;
-            }
-        });
-
-        window.fecharPopupNotif = function() {
-            document.getElementById('popup-notif').style.display = 'none';
         }
 
-        window.realizarLogin = async function() {
+        window.realizarLoginOuCadastro = async function() {
             const email = document.getElementById('auth-email').value;
             const senha = document.getElementById('auth-senha').value;
 
             if (!email || !senha) {
-                alert("Digite o e-mail e a senha para entrar!");
+                alert("Preencha o e-mail e a senha!");
                 return;
             }
 
             try {
-                await signInWithEmailAndPassword(auth, email, senha);
-                alert("Login realizado com sucesso!");
+                if (modoCadastro) {
+                    await createUserWithEmailAndPassword(auth, email, senha);
+                    alert("Conta criada com sucesso! Você já está logado.");
+                } else {
+                    await signInWithEmailAndPassword(auth, email, senha);
+                    alert("Login realizado com sucesso!");
+                }
             } catch (erro) {
-                alert("Erro ao entrar: " + erro.message);
-            }
-        }
-
-        window.criarConta = async function() {
-            const email = document.getElementById('auth-email').value;
-            const senha = document.getElementById('auth-senha').value;
-
-            if (!email || !senha) {
-                alert("Digite o e-mail e uma senha nos campos acima para criar sua conta!");
-                return;
-            }
-
-            try {
-                await createUserWithEmailAndPassword(auth, email, senha);
-                alert("Conta criada e logada com sucesso!");
-            } catch (erro) {
-                alert("Erro ao criar conta: " + erro.message);
+                if (!modoCadastro && erro.code === 'auth/invalid-credential') {
+                    try {
+                        await createUserWithEmailAndPassword(auth, email, senha);
+                        alert("Conta criada e logada com sucesso!");
+                        return;
+                    } catch (errCad) {
+                        alert("Erro ao autenticar: " + errCad.message);
+                        return;
+                    }
+                }
+                alert("Erro: " + erro.message);
             }
         }
 
         window.esqueciSenha = async function() {
             const email = document.getElementById('auth-email').value;
             if (!email) {
-                alert("Digite o seu e-mail no campo de e-mail lá em cima primeiro.");
+                alert("Por favor, digite o seu e-mail no campo de e-mail acima para recuperar a senha.");
                 return;
             }
             try {
                 await sendPasswordResetEmail(auth, email);
                 alert("E-mail de recuperação enviado! Verifique sua caixa de entrada e spam.");
             } catch (erro) {
-                alert("Erro: " + erro.message);
+                alert("Erro ao enviar e-mail: " + erro.message);
             }
         }
 
@@ -275,36 +203,25 @@
         const EMAIL_ADMIN_OFICIAL = "giliardmartins31@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
-            const blocoAuth = document.getElementById('bloco-auth-topo');
-            
             if (user) {
-                // Usuário logado: Muda o botão de entrar para botão de Sair vermelho
-                blocoAuth.innerHTML = `
-                    <span style="font-size: 11px; max-width: 110px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold;">👤 ${user.email.split('@')[0]}</span>
-                    <button class="btn-sair-topo" onclick="fazerLogout()">Sair</button>
-                `;
-
+                // Esconde a tela de login padrão
+                document.getElementById('card-autenticacao').classList.add('escondido');
+                
                 if (user.email === EMAIL_ADMIN_OFICIAL) {
-                    usuarioAtualAdmin = true;
+                    // É o Administrador
                     document.getElementById('painel-admin').classList.remove('escondido');
                     document.getElementById('info-admin').innerText = "Logado como Admin: " + user.email;
+                    document.getElementById('div-sair-usuario').classList.add('escondido');
                 } else {
-                    usuarioAtualAdmin = false;
+                    // É um usuário comum logado (mostra opção de sair)
                     document.getElementById('painel-admin').classList.add('escondido');
+                    document.getElementById('div-sair-usuario').classList.remove('escondido');
                 }
-                carregarProdutos();
             } else {
-                // Ninguém logado: Restaura os inputs de login e cadastro maiores e organizados
-                usuarioAtualAdmin = false;
-                blocoAuth.innerHTML = `
-                    <input type="email" id="auth-email" placeholder="E-mail">
-                    <input type="password" id="auth-senha" placeholder="Senha">
-                    <button id="btn-acao-auth" onclick="realizarLogin()">Entrar</button>
-                    <button style="background: #0284c7;" onclick="criarConta()">Cadastrar</button>
-                    <span class="link-topo" onclick="esqueciSenha()">Esqueci</span>
-                `;
+                // Ninguém logado
+                document.getElementById('card-autenticacao').classList.remove('escondido');
                 document.getElementById('painel-admin').classList.add('escondido');
-                carregarProdutos();
+                document.getElementById('div-sair-usuario').classList.add('escondido');
             }
         });
 
@@ -320,39 +237,19 @@
                 let htmlProdutos = '';
                 querySnapshot.forEach((docSnap) => {
                     const prod = docSnap.data();
-                    
-                    let botaoApagarHTML = '';
-                    if (usuarioAtualAdmin) {
-                        botaoApagarHTML = `<button class="btn-apagar" onclick="apagarProduto('${docSnap.id}')">🗑️ Apagar Anúncio</button>`;
-                    }
-
                     htmlProdutos += `
                         <div class="card produto-card">
                             <img src="${prod.imagem}" alt="Produto">
                             <div class="produto-titulo">${prod.titulo}</div>
                             <div class="produto-preco">R$ ${prod.preco}</div>
                             <p>${prod.descricao || 'Garanta já o seu!'}</p>
-                            <button class="btn-principal" onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
-                            ${botaoApagarHTML}
+                            <button onclick="clicarProduto('${docSnap.id}', '${prod.linkAfiliado}')">🔥 Ver Oferta na Loja</button>
                         </div>
                     `;
                 });
                 container.innerHTML = htmlProdutos;
             } catch (erro) {
                 console.error("Erro ao carregar produtos:", erro);
-            }
-        }
-
-        window.apagarProduto = async function(idProduto) {
-            if (confirm("Tem certeza que deseja apagar este anúncio da vitrine?")) {
-                try {
-                    await deleteDoc(doc(db, "produtos", idProduto));
-                    alert("Produto apagado com sucesso!");
-                    carregarProdutos();
-                } catch (erro) {
-                    console.error("Erro ao apagar:", erro);
-                    alert("Erro ao tentar apagar o produto.");
-                }
             }
         }
 
@@ -430,7 +327,7 @@
                 if (permission === 'granted') {
                     alert("Notificações ativadas com sucesso!");
                 } else {
-                    alert("Permissão de notificação negada.");
+                    alert("Permissão negada.");
                 }
             });
         }
